@@ -87,10 +87,17 @@ def decode(image, symbols=None):
     # Test for PIL.Image and numpy.ndarray without requiring that cv2 or PIL
     # are installed.
     if 'PIL.' in str(type(image)):
-        pixels = image.convert('L').tobytes()
+        if 'L' != image.mode:
+            image = image.convert('L')
+        pixels = image.tobytes()
         width, height = image.size
     elif 'numpy.ndarray' in str(type(image)):
-        pixels = image[:, :, 0].astype('uint8').tobytes()
+        if 3 == len(image.shape):
+            # Take just the first channel
+            image = image[:, :, 0]
+        if 'uint8' != str(image.dtype):
+            image = image.astype('uint8')
+        pixels = image.tobytes()
         height, width = image.shape[:2]
     else:
         # image should be a tuple (pixels, width, height)
