@@ -41,10 +41,6 @@ pip install pyzbar
 pip install pyzbar[scripts]
 ```
 
-
-
-
-
 ## Example usage
 
 The `decode` function accepts instances of `PIL.Image`.
@@ -104,7 +100,7 @@ effect of this on performance)
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.QRCODE])
 [Decoded(data=b'Thalassiodracon', type='QRCODE')]
 
->>> # If we look just code128, the qrcodes in the image will not be detected
+>>> # If we look for just code128, the qrcodes in the image will not be detected
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
 []
 ```
