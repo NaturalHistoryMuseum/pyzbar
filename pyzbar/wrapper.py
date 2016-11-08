@@ -88,17 +88,25 @@ def load_libzbar():
             # depth of interpreter.
             if sys.maxsize > 2**32:
                 fname = 'libzbar64-0.dll'
+                dependencies = ['libiconv.dll']
             else:
                 fname = 'libzbar-0.dll'
+                dependencies = ['libiconv-2.dll', 'zlib1.dll']
 
             for dir in sys.path:
-                try:
-                    LIBZBAR = cdll.LoadLibrary(str(Path(dir).joinpath(fname)))
-                except OSError as e:
-                    pass
-                else:
-                    # Sucessfully loaded the DLL
-                    break
+                path = Path(dir).joinpath(fname)
+                if path.is_file():
+                    # Only try to load dependencies if the zbar DLL exists
+                    try:
+                        # The dependencies must be loaded first
+                        for dep in dependencies:
+                            cdll.LoadLibrary(str(Path(dir).joinpath(dep)))
+                        LIBZBAR = cdll.LoadLibrary(str(Path(dir).joinpath(fname)))
+                    except OSError as e:
+                        pass
+                    else:
+                        # Sucessfully loaded the DLL
+                        break
             else:
                 raise ImportError('Unable to find zbar DLL')
         else:
