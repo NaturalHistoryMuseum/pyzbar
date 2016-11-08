@@ -44,7 +44,7 @@ setup_data = {
         ],
     },
     'tests_require': [
-        # TODO How to specify OpenCV? 'cv2>=2.4.8,<3',
+        # TODO How to specify OpenCV? 'cv2>=2.4.8',
         'nose>=1.3.4',
         PILLOW
     ],
