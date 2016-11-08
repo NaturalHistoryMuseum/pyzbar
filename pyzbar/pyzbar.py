@@ -71,30 +71,6 @@ def zbar_image_scanner():
             zbar_image_scanner_destroy(scanner)
 
 
-# A static inline that is not exported by the library
-def zbar_image_scanner_parse_config(scanner, config_string):
-    """Parses configuration string using zbar_parse_config
-    and applies to image scanner using zbar_image_scanner_set_config.
-
-    Args:
-        scanner (POINTER(zbar_image_scanner)):
-        config_string (str): 
-
-    Returns:
-        int
-    """
-    sym = c_int(ZBarSymbol.NONE)
-    cfg = c_int(ZBarConfig.CFG_ENABLE)
-    val = c_int()
-    res = zbar_parse_config(config_string, byref(sym), byref(cfg), byref(val))
-    if 0 != res:
-        raise PyLibZBarError('Unable to parse config string')
-
-    res = zbar_image_scanner_set_config(scanner, sym, cfg, val)
-    if 0 != res:
-        raise PyLibZBarError('Unable to set config')
-
-
 def decode(image):
     """Decodes datamatrix barcodes in `image`.
 
@@ -111,7 +87,6 @@ def decode(image):
         pixels = image.convert('L').tobytes()
         width, height = image.size
     elif 'numpy.ndarray' in str(type(image)):
-        # TODO Take just first channel?
         pixels = image[:, :, 0].astype('uint8').tobytes()
         height, width = image.shape[:2]
     else:
@@ -125,9 +100,6 @@ def decode(image):
 
     results = []
     with zbar_image_scanner() as scanner:
-        zbar_image_scanner_parse_config(
-            scanner, '{0}.enable'.format('qrcode').encode()
-        )
         zbar_image_scanner_set_config(
             scanner, ZBarSymbol.QRCODE, ZBarConfig.CFG_ENABLE, 1
         )
