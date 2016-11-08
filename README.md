@@ -53,8 +53,8 @@ The `decode` function accepts instances of `PIL.Image`.
 >>> from pyzbar.pyzbar import decode
 >>> from PIL import Image
 >>> decode(Image.open('pyzbar/tests/code128.png'))
-[Decoded(data='Stegosaurus', rect=Rect(left=5, top=6, width=96, height=95)),
- Decoded(data='Plesiosaurus', rect=Rect(left=298, top=6, width=95, height=95))]
+[Decoded(data=b'Foramenifera', type='CODE128'),
+ Decoded(data=b'Rana temporaria', type='CODE128')]
 ```
 
 It also accepts instances of `numpy.ndarray`, which might come from loading
@@ -62,19 +62,27 @@ images using [OpenCV](http://opencv.org/).
 
 ```
 >>> import cv2
->>> decode(cv2.imread('pylibdmtx/tests/datamatrix.png'))
-[Decoded(data='Stegosaurus', rect=Rect(left=5, top=6, width=96, height=95)),
- Decoded(data='Plesiosaurus', rect=Rect(left=298, top=6, width=95, height=95))]
+>>> decode(cv2.imread('pyzbar/tests/code128.png'))
+[Decoded(data=b'Foramenifera', type='CODE128'),
+ Decoded(data=b'Rana temporaria', type='CODE128')]
 ```
 
-You can also provide a tuple `(pixels, width, height)`
+You can also provide a tuple `(pixels, width, height)`, where the image data
+is eight bits-per-pixel.
 
 ```
->>> image = cv2.imread('pylibdmtx/tests/datamatrix.png')
+>>> image = cv2.imread('pyzbar/tests/code128.png')
 >>> height, width = image.shape[:2]
->>> decode((image.tobytes(), width, height))
-[Decoded(data='Stegosaurus', rect=Rect(left=5, top=6, width=96, height=95)),
- Decoded(data='Plesiosaurus', rect=Rect(left=298, top=6, width=95, height=95))]
+>>> # Considering just the blue channel
+>>> decode((image[:, :, 0].astype('uint8').tobytes(), width, height))
+[Decoded(data=b'Foramenifera', type='CODE128'),
+ Decoded(data=b'Rana temporaria', type='CODE128')]
+
+>>> # Converting to greyscale
+>>> grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+>>> decode((grey.tobytes(), width, height))
+[Decoded(data=b'Foramenifera', type='CODE128'),
+ Decoded(data=b'Rana temporaria', type='CODE128')]
 ```
 
 
