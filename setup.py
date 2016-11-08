@@ -66,11 +66,14 @@ setup_data = {
 if 'bdist_wheel' in sys.argv and ('--plat-name=win32' in sys.argv or '--plat-name=win_amd64' in sys.argv):
     # Include the pyzbar runtime DLL, its dependencies and its license in
     # 'data_files'
+    from pathlib import Path
     dir = Path(
         'dlls-{0}'.format('32' if '--plat-name=win32' in sys.argv else '64')
     )
     data_files = setup_data.get('data_files', [])
-    data_files.append(('', ['pyzbar-LICENSE.txt'] + list(dir.glob('*dll'))))
+    data_files.append(
+        ('', ['zbar-LICENSE.txt'] + [str(p) for p in dir.glob('*dll')])
+    )
     setup_data['data_files'] = data_files
 
 
