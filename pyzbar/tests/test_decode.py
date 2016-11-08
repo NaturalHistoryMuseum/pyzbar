@@ -10,7 +10,7 @@ except ImportError:
     cv2 = None
 
 
-from pyzbar.pyzbar import decode, Decoded
+from pyzbar.pyzbar import decode, Decoded, ZBarSymbol
 from pyzbar.pyzbar_error import PyZbarError
 
 
@@ -53,6 +53,16 @@ class TestDecode(unittest.TestCase):
         "Read both barcodes in `qrcode.png`"
         res = decode(self.qrcode)
         self.assertEqual(self.EXPECTED_QRCODE, res)
+
+    def test_symbols(self):
+        "Read only qrcodes in `qrcode.png`"
+        res = decode(self.qrcode, symbols=[ZBarSymbol.QRCODE])
+        self.assertEqual(self.EXPECTED_QRCODE, res)
+
+    def test_symbols_not_present(self):
+        "Read only code128 in `qrcode.png`"
+        res = decode(self.qrcode, symbols=[ZBarSymbol.CODE128])
+        self.assertEqual([], res)
 
     def test_decode_tuple(self):
         "Read barcodes in pixels"
