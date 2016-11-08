@@ -1,0 +1,23 @@
+language:
+  - python
+
+sudo:
+  - required
+
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libzbar0 python-opencv
+
+install:
+  - pip install tox-travis coveralls
+
+script:
+  - tox
+
+after_success:
+  - coveralls

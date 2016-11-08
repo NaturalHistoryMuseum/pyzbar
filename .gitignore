@@ -1,0 +1,9 @@
+*.py[co]
+*.egg-info/
+.DS_Store
+build
+dist
+.tox
+README.rst
+.coverage
+dll*
