@@ -6,7 +6,7 @@ pip install -U pip
 pip install -r requirements.pip
 
 nosetests
-python -m pyzbar.scripts.read_zbar code128 pylibdmtx/tests/code128.png
+python -m pyzbar.scripts.read_zbar pyzbar/tests/code128.png
 ```
 
 ### Testing python versions
@@ -33,7 +33,7 @@ and dlls-64/ respectively.
 The `load_zbar` function in `wrapper.py` looks for the appropriate `DLL`
 on `sys.path`. The appropriate `DLL` is packaged up into the wheel build,
 then installed to the root of the virtual env. This strategy allows
-the same method to be used when `pylibdmtx` is run from source, as an installed
+the same method to be used when `pyzbar` is run from source, as an installed
 package and when included in a frozen binary.
 
 ## Releasing
@@ -48,7 +48,7 @@ brew install pandoc
 2. Build
     Generate the `reStructuredText README.rst` from `README.md` and create
     source and wheel builds. The `win32` and `win_amd64` will contain the
-    appropriate `libdmtx.dll`.
+    appropriate `zbar.dll` and its dependencies.
 
     ```
     pandoc --from=markdown --to=rst README.md -o README.rst
