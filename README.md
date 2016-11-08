@@ -73,18 +73,41 @@ is eight bits-per-pixel.
 ```
 >>> image = cv2.imread('pyzbar/tests/code128.png')
 >>> height, width = image.shape[:2]
->>> # Considering just the blue channel
+
+>>> # 8 bpp by considering just the blue channel
 >>> decode((image[:, :, 0].astype('uint8').tobytes(), width, height))
 [Decoded(data=b'Foramenifera', type='CODE128'),
  Decoded(data=b'Rana temporaria', type='CODE128')]
 
->>> # Converting to greyscale
+>>> # 8 bpp by converting image to greyscale
 >>> grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 >>> decode((grey.tobytes(), width, height))
 [Decoded(data=b'Foramenifera', type='CODE128'),
  Decoded(data=b'Rana temporaria', type='CODE128')]
+
+>>> # If you don't provide 8 bpp
+>>> decode((image.tobytes(), width, height))
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/lawh/projects/pyzbar/pyzbar/pyzbar.py", line 102, in decode
+    raise PyZbarError('Unsupported bits-per-pixel [{0}]'.format(bpp))
+pyzbar.pyzbar_error.PyZbarError: Unsupported bits-per-pixel [24]
 ```
 
+`zbar`'s default behaviour is (I think) to decode all symbol types.
+You can ask `zbar` to look for just your symbol types (I have no idea of the
+effect of this on performance)
+
+```
+>>> from pyzbar.pyzbar import ZBarSymbol
+>>> # Look for just qrcode
+>>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.QRCODE])
+[Decoded(data=b'Thalassiodracon', type='QRCODE')]
+
+>>> # If we look just code128, the qrcodes in the image will not be detected
+>>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
+[]
+```
 
 ## License
 

@@ -71,11 +71,14 @@ def zbar_image_scanner():
             zbar_image_scanner_destroy(scanner)
 
 
-def decode(image):
+def decode(image, symbols=None):
     """Decodes datamatrix barcodes in `image`.
 
     Args:
         image: `numpy.ndarray`, `PIL.Image` or tuple (pixels, width, height)
+        symbols (ZBarSymbol): the symbol types to decode; if `None`, use
+            `zbar`'s default behaviour, which (I think) is to decode all
+            symbol types.
 
     Returns:
         :obj:`list` of :obj:`Decoded`: The values decoded from barcodes.
@@ -100,12 +103,21 @@ def decode(image):
 
     results = []
     with zbar_image_scanner() as scanner:
-        zbar_image_scanner_set_config(
-            scanner, ZBarSymbol.QRCODE, ZBarConfig.CFG_ENABLE, 1
-        )
-        zbar_image_scanner_set_config(
-            scanner, ZBarSymbol.CODE128, ZBarConfig.CFG_ENABLE, 1
-        )
+        if symbols:
+            # Disable all but the symbols of interest
+            disable = set(ZBarSymbol).difference(symbols)
+            for symbol in disable:
+                zbar_image_scanner_set_config(
+                    scanner, symbol, ZBarConfig.CFG_ENABLE, 0
+                )
+            # I think it likely that zbar will detect all symbol types by
+            # default, in which case enabling the types of interest is
+            # redundant but it seems sensible to be over-cautious and enable
+            # them.
+            for symbol in symbols:
+                zbar_image_scanner_set_config(
+                    scanner, symbol, ZBarConfig.CFG_ENABLE, 1
+                )
         with zbar_image() as img:
             zbar_image_set_format(img, FOURCC['L800'])
             zbar_image_set_size(img, width, height)
