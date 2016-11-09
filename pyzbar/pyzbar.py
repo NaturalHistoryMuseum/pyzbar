@@ -1,18 +1,20 @@
 from __future__ import print_function
+
 from collections import namedtuple
 from contextlib import contextmanager
-from ctypes import cast, byref, c_char_p, c_int, c_uint, c_void_p, string_at
+from ctypes import cast, c_void_p, string_at
 
 from .pyzbar_error import PyZbarError
 from .wrapper import (
-    c_ubyte_p, c_ulong_p, zbar_set_verbosity,
-    zbar_parse_config, zbar_image_scanner_set_config,
+    zbar_image_scanner_set_config,
     zbar_image_scanner_create, zbar_image_scanner_destroy,
     zbar_image_create, zbar_image_destroy, zbar_image_set_format,
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
-    zbar_image_first_symbol, zbar_symbol_get_data_length, zbar_symbol_get_data,
-    zbar_symbol_next, ZBarConfig, ZBarSymbol
+    zbar_image_first_symbol, zbar_symbol_get_data,
+    zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
+
+__all__ = ['decode', 'EXTERNAL_DEPENDENCIES']
 
 
 # Results of reading a barcode

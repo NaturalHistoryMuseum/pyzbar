@@ -4,8 +4,8 @@ import platform
 import sys
 
 from ctypes import (
-    addressof, byref, cdll, c_ubyte, c_char, c_char_p, c_int, c_uint, c_ulong,
-    c_void_p, Structure, CFUNCTYPE, pointer, POINTER
+    cdll, c_ubyte, c_char_p, c_int, c_uint, c_ulong, c_void_p, Structure,
+    CFUNCTYPE, POINTER
 )
 from ctypes.util import find_library
 from enum import IntEnum, unique
@@ -77,44 +77,67 @@ class zbar_image(Structure):
     pass
 
 
+# Globals populated in load_libzbar
 LIBZBAR = None
+"""ctypes.CDLL
+"""
+
+EXTERNAL_DEPENDENCIES = []
+"""Sequence of instances of ctypes.CDLL
+"""
+
 
 def load_libzbar():
+    """Loads the zbar shared library and its dependencies.
+    """
     global LIBZBAR
+    global EXTERNAL_DEPENDENCIES
     if not LIBZBAR:
-        sysname = platform.system()
-        if 'Windows' == sysname:
-            # Assume a DLL that is on sys.path. The DLL is specific to the bit
-            # depth of interpreter.
+        if 'Windows' == platform.system():
+            # Possible scenarios here
+            #   1. Run from source, DLLs are in pyzbar directory
+            #       cdll.LoadLibrary() imports DLLs in repo root directory
+            #   2. Wheel install into CPython installation
+            #       cdll.LoadLibrary() imports DLLs in package directory
+            #   3. Wheel install into virtualenv
+            #       cdll.LoadLibrary() imports DLLs in package directory
+            #   4. Frozen
+            #       cdll.LoadLibrary() imports DLLs alongside executable
+
+            # 'libzbar-64.dll' and 'libzbar-32.dll' have a dependent DLL
+            # 'libiconv.dll' and 'libiconv-2.dll' respectively.
             if sys.maxsize > 2**32:
-                fname = 'libzbar64-0.dll'
+                # 64-bit
+                fname = 'libzbar-64.dll'
                 dependencies = ['libiconv.dll']
             else:
-                fname = 'libzbar-0.dll'
-                dependencies = ['libiconv-2.dll', 'zlib1.dll']
+                # 32-bit
+                fname = 'libzbar-32.dll'
+                dependencies = ['libiconv-2.dll']
 
-            for dir in sys.path:
-                path = Path(dir).joinpath(fname)
-                if path.is_file():
-                    # Only try to load dependencies if the zbar DLL exists
-                    try:
-                        # The dependencies must be loaded first
-                        for dep in dependencies:
-                            cdll.LoadLibrary(str(Path(dir).joinpath(dep)))
-                        LIBZBAR = cdll.LoadLibrary(str(Path(dir).joinpath(fname)))
-                    except OSError as e:
-                        pass
-                    else:
-                        # Sucessfully loaded the DLL
-                        break
-            else:
-                raise ImportError('Unable to find zbar DLL')
+            def load(dir):
+                # Load dependencies before loading libzbar dll
+                deps = [
+                    cdll.LoadLibrary(str(dir.joinpath(dep)))
+                    for dep in dependencies
+                ]
+                libzbar = cdll.LoadLibrary(str(dir.joinpath(fname)))
+                return deps, libzbar
+
+            try:
+                loaded_dependencies, libzbar = load(Path(''))
+            except OSError as e:
+                loaded_dependencies, libzbar = load(Path(__file__).parent)
         else:
-            # Assume a shared library on the path.
+            # Assume a shared library on the path
             path = find_library('zbar')
             if not path:
                 raise ImportError('Unable to find zbar shared library')
-            LIBZBAR = cdll.LoadLibrary(path)
+            libzbar = cdll.LoadLibrary(path)
+            loaded_dependencies = []
+
+        LIBZBAR = libzbar
+        EXTERNAL_DEPENDENCIES = [LIBZBAR] + loaded_dependencies
 
     return LIBZBAR
 

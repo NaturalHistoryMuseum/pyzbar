@@ -1,3 +1,7 @@
+### v0.1.2
+
+* #5 Better handling of DLLs
+
 ### v0.1.1
 
 * #3 Error when decoding ndarray on an image with a single channel

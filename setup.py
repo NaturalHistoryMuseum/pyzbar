@@ -49,7 +49,6 @@ setup_data = {
         PILLOW
     ],
     'include_package_data': True,
-    'package_data': {'pyzbar': ['pyzbar/tests/*.png']},
     'classifiers': [
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
@@ -61,20 +60,6 @@ setup_data = {
         'Programming Language :: Python :: 3.5',
     ],
 }
-
-
-if 'bdist_wheel' in sys.argv and ('--plat-name=win32' in sys.argv or '--plat-name=win_amd64' in sys.argv):
-    # Include the pyzbar runtime DLL, its dependencies and its license in
-    # 'data_files'
-    from pathlib import Path
-    dir = Path(
-        'dlls-{0}'.format('32' if '--plat-name=win32' in sys.argv else '64')
-    )
-    data_files = setup_data.get('data_files', [])
-    data_files.append(
-        ('', ['zbar-LICENSE.txt'] + [str(p) for p in dir.glob('*dll')])
-    )
-    setup_data['data_files'] = data_files
 
 
 def setuptools_setup():
