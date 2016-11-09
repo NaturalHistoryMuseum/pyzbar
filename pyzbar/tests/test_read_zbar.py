@@ -26,6 +26,7 @@ def capture_stdout():
 
 class TestReadZbar(unittest.TestCase):
     def test_read_qrcode(self):
+        "Read QR code"
         with capture_stdout() as stdout:
             main([str(Path(__file__).parent.joinpath('qrcode.png'))])
 
@@ -38,6 +39,7 @@ class TestReadZbar(unittest.TestCase):
 
 
     def test_read_code128(self):
+        "Read CODE 128 barcodes"
         with capture_stdout() as stdout:
             main([str(Path(__file__).parent.joinpath('code128.png'))])
 

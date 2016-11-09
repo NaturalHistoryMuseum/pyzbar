@@ -1,0 +1,3 @@
+include pyzbar/zbar-LICENSE.txt
+include pyzbar/libzbar-32.dll
+include pyzbar/libiconv-2.dll

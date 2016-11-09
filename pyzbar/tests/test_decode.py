@@ -1,3 +1,4 @@
+import platform
 import unittest
 
 from pathlib import Path
@@ -10,7 +11,7 @@ except ImportError:
     cv2 = None
 
 
-from pyzbar.pyzbar import decode, Decoded, ZBarSymbol
+from pyzbar.pyzbar import decode, Decoded, ZBarSymbol, EXTERNAL_DEPENDENCIES
 from pyzbar.pyzbar_error import PyZbarError
 
 
@@ -89,6 +90,17 @@ class TestDecode(unittest.TestCase):
             cv2.imread(str(TESTDATA.joinpath('code128.png')))
         )
         self.assertEqual(self.EXPECTED_CODE128, res)
+
+    def test_external_dependencies(self):
+        "External dependencies"
+        if 'Windows' == platform.system():
+            self.assertEqual(2, len(EXTERNAL_DEPENDENCIES))
+            self.assertTrue(
+                any('libiconv' in d._name for d in EXTERNAL_DEPENDENCIES)
+            )
+        self.assertTrue(
+            any('libzbar' in d._name for d in EXTERNAL_DEPENDENCIES)
+        )
 
 
 if __name__ == '__main__':

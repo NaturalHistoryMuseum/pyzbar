@@ -28,13 +28,12 @@ tox
 ### Windows
 
 Save the 32-bit and 64-bit `zbar.dll` files, and their dependencies,
-to `zbar-32.dll` and `zbar-64.dll` respectively, in the directories `dlls-32`
-and dlls-64/ respectively.
-The `load_zbar` function in `wrapper.py` looks for the appropriate `DLL`
-on `sys.path`. The appropriate `DLL` is packaged up into the wheel build,
-then installed to the root of the virtual env. This strategy allows
-the same method to be used when `pyzbar` is run from source, as an installed
-package and when included in a frozen binary.
+to `libzbar-32.dll` and `libzbar-64.dll` respectively, in the `pyzbar` directory.
+The `load_zbar` function in `wrapper.py` looks for the appropriate `DLL`s.
+The appropriate `DLL`s are packaged up into the wheel build and is installed
+alongside the package source. This strategy allows the same method to be used
+when `pyzbar` is run from source, as an installed package and when included in a
+frozen binary.
 
 ## Releasing
 
@@ -50,12 +49,23 @@ brew install pandoc
     source and wheel builds. The `win32` and `win_amd64` will contain the
     appropriate `zbar.dll` and its dependencies.
 
+    Including just the DLLs we want is pain...
+
     ```
     pandoc --from=markdown --to=rst README.md -o README.rst
-    rm -rf build dist
+    rm -rf build dist MANIFEST.in pyzbar.egg-info
+    cp MANIFEST.in.all MANIFEST.in
     ./setup.py bdist_wheel
+
+    cat MANIFEST.in.all MANIFEST.in.win32 > MANIFEST.in
     ./setup.py bdist_wheel --plat-name=win32
+
+    # Remove build to prevent win32 DLLs from being included in win64 build
+    rm -rf build 
+    cat MANIFEST.in.all MANIFEST.in.win64 > MANIFEST.in
     ./setup.py bdist_wheel --plat-name=win_amd64
+
+    rm -rf build MANIFEST.in pyzbar.egg-info
     ```
 
 3. Release to pypitest (see https://wiki.python.org/moin/TestPyPI for details)

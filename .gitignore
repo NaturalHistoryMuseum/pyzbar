@@ -6,4 +6,5 @@ dist
 .tox
 README.rst
 .coverage
-dll*
+*dll
+MANIFEST.in
