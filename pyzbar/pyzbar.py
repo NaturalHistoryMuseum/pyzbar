@@ -99,7 +99,12 @@ def decode(image, symbols=None):
             image = image[:, :, 0]
         if 'uint8' != str(image.dtype):
             image = image.astype('uint8')
-        pixels = image.tobytes()
+        try:
+            pixels = image.tobytes()
+        except AttributeError:
+            # `numpy.ndarray.tobytes()` introduced in `numpy` 1.9.0 - use the
+            # older `tostring` method.
+            pixels = image.tostring()
         height, width = image.shape[:2]
     else:
         # image should be a tuple (pixels, width, height)
