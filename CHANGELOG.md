@@ -1,3 +1,7 @@
+### v0.1.4
+
+* #9 Python 3.6
+
 ### v0.1.3
 
 * #7 Support older numpy

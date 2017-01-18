@@ -1,6 +1,6 @@
 # pyzbar
 
-[![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5-blue.svg)](https://github.com/NaturalHistoryMuseum/pyzbar)
+[![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5%2C%203.6-blue.svg)](https://github.com/NaturalHistoryMuseum/pyzbar)
 [![PyPI version](https://badge.fury.io/py/pyzbar.svg)](https://pypi.python.org/pypi/pyzbar/)
 [![Travis status](https://travis-ci.org/NaturalHistoryMuseum/pyzbar.svg?branch=master)](https://travis-ci.org/NaturalHistoryMuseum/pyzbar)
 [![Coverage Status](https://coveralls.io/repos/github/NaturalHistoryMuseum/pyzbar/badge.svg?branch=master)](https://coveralls.io/github/NaturalHistoryMuseum/pyzbar?branch=master)
