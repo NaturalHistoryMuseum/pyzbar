@@ -146,6 +146,7 @@ def decode(image, symbols=None):
                     data = string_at(zbar_symbol_get_data(symbol))
                     symbol_type = ZBarSymbol(symbol.contents.value).name
 
+                    location = []
                     loc = zbar_symbol_get_loc_size(symbol)
                     if loc:
                         location = [
@@ -155,8 +156,6 @@ def decode(image, symbols=None):
                             )
                             for l in range(loc)
                         ]
-                    else:
-                        location = list()
 
                     results.append(Decoded(
                         data=data,
