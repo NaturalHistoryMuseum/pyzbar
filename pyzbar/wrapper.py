@@ -261,6 +261,26 @@ zbar_symbol_get_data = zbar_function(
     POINTER(c_int)         # values in ZBarSymbol
 )
 
+zbar_symbol_get_loc_size = zbar_function(
+    'zbar_symbol_get_loc_size',
+    c_uint,
+    POINTER(c_int)         # values in ZBARSymbol
+)
+
+zbar_symbol_get_loc_x = zbar_function(
+    'zbar_symbol_get_loc_x',
+    c_uint,
+    POINTER(c_int),        # values in ZBARSymbol
+    c_uint
+)
+
+zbar_symbol_get_loc_y = zbar_function(
+    'zbar_symbol_get_loc_y',
+    c_uint,
+    POINTER(c_int),        # values in ZBARSymbol
+    c_uint
+)
+
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
     POINTER(c_int),

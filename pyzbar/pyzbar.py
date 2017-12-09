@@ -11,6 +11,7 @@ from .wrapper import (
     zbar_image_create, zbar_image_destroy, zbar_image_set_format,
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
     zbar_image_first_symbol, zbar_symbol_get_data,
+    zbar_symbol_get_loc_size, zbar_symbol_get_loc_x, zbar_symbol_get_loc_y,
     zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 
@@ -18,7 +19,7 @@ __all__ = ['decode', 'EXTERNAL_DEPENDENCIES']
 
 
 # Results of reading a barcode
-Decoded = namedtuple('Decoded', ['data', 'type'])
+Decoded = namedtuple('Decoded', ['data', 'type', 'location'])
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 FOURCC = {
@@ -144,9 +145,23 @@ def decode(image, symbols=None):
                 while symbol:
                     data = string_at(zbar_symbol_get_data(symbol))
                     symbol_type = ZBarSymbol(symbol.contents.value).name
+
+                    loc = zbar_symbol_get_loc_size(symbol)
+                    if loc:
+                        location = [
+                            (
+                                zbar_symbol_get_loc_x(symbol, l),
+                                zbar_symbol_get_loc_y(symbol, l)
+                            )
+                            for l in range(loc)
+                        ]
+                    else:
+                        location = list()
+
                     results.append(Decoded(
                         data=data,
-                        type=symbol_type
+                        type=symbol_type,
+                        location=location
                     ))
 
                     symbol = zbar_symbol_next(symbol)
