@@ -49,8 +49,8 @@ The `decode` function accepts instances of `PIL.Image`.
 >>> from pyzbar.pyzbar import decode
 >>> from PIL import Image
 >>> decode(Image.open('pyzbar/tests/code128.png'))
-[Decoded(data=b'Foramenifera', type='CODE128'),
- Decoded(data=b'Rana temporaria', type='CODE128')]
+[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
+Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
 ```
 
 It also accepts instances of `numpy.ndarray`, which might come from loading
@@ -59,8 +59,8 @@ images using [OpenCV](http://opencv.org/).
 ```
 >>> import cv2
 >>> decode(cv2.imread('pyzbar/tests/code128.png'))
-[Decoded(data=b'Foramenifera', type='CODE128'),
- Decoded(data=b'Rana temporaria', type='CODE128')]
+[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
+Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
 ```
 
 You can also provide a tuple `(pixels, width, height)`, where the image data
@@ -72,14 +72,14 @@ is eight bits-per-pixel.
 
 >>> # 8 bpp by considering just the blue channel
 >>> decode((image[:, :, 0].astype('uint8').tobytes(), width, height))
-[Decoded(data=b'Foramenifera', type='CODE128'),
- Decoded(data=b'Rana temporaria', type='CODE128')]
+[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
+Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
 
 >>> # 8 bpp by converting image to greyscale
 >>> grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 >>> decode((grey.tobytes(), width, height))
-[Decoded(data=b'Foramenifera', type='CODE128'),
- Decoded(data=b'Rana temporaria', type='CODE128')]
+[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
+Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
 
 >>> # If you don't provide 8 bpp
 >>> decode((image.tobytes(), width, height))
@@ -98,7 +98,7 @@ effect of this on performance)
 >>> from pyzbar.pyzbar import ZBarSymbol
 >>> # Look for just qrcode
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.QRCODE])
-[Decoded(data=b'Thalassiodracon', type='QRCODE')]
+[Decoded(data=b'Thalassiodracon', type='QRCODE', rect=Rect(left=27, top=27, width=145, height=145))]
 
 >>> # If we look for just code128, the qrcodes in the image will not be detected
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])

@@ -13,7 +13,9 @@ except ImportError:
     cv2 = None
 
 
-from pyzbar.pyzbar import decode, Decoded, ZBarSymbol, EXTERNAL_DEPENDENCIES
+from pyzbar.pyzbar import (
+    decode, Rect, Decoded, ZBarSymbol, EXTERNAL_DEPENDENCIES
+)
 from pyzbar.pyzbar_error import PyZbarError
 
 
@@ -24,20 +26,24 @@ class TestDecode(unittest.TestCase):
     EXPECTED_CODE128 = [
         Decoded(
             data=b'Foramenifera',
-            type='CODE128'
+            type='CODE128',
+            rect=Rect(left=37, top=550, width=324, height=76)
         ),
         Decoded(
             data=b'Rana temporaria',
-            type='CODE128'
+            type='CODE128',
+            rect=Rect(left=4, top=0, width=390, height=76)
         )
     ]
 
     EXPECTED_QRCODE = [
         Decoded(
             b'Thalassiodracon',
-            type='QRCODE'
+            type='QRCODE',
+            rect=Rect(left=27, top=27, width=145, height=145)
         )
     ]
+
     def setUp(self):
         self.code128 = Image.open(str(TESTDATA.joinpath('code128.png')))
         self.qrcode = Image.open(str(TESTDATA.joinpath('qrcode.png')))
