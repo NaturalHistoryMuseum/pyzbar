@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from operator import itemgetter
 from collections import namedtuple
 from contextlib import contextmanager
 from ctypes import cast, c_void_p, string_at
@@ -17,9 +18,13 @@ from .wrapper import (
 
 __all__ = ['decode', 'EXTERNAL_DEPENDENCIES']
 
+RANGEFN = getattr(globals(), 'xrange', range)
+
+# A rectangle
+Rect = namedtuple('Rect', ['left', 'top', 'width', 'height'])
 
 # Results of reading a barcode
-Decoded = namedtuple('Decoded', ['data', 'type', 'location'])
+Decoded = namedtuple('Decoded', ['data', 'type', 'rect'])
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 FOURCC = {
@@ -72,6 +77,23 @@ def zbar_image_scanner():
             yield scanner
         finally:
             zbar_image_scanner_destroy(scanner)
+
+
+def bounding_box_of_locations(locations):
+    """Computes bounding boxes from scan locations.
+
+    Args:
+        locations: :obj:`list` of tuple (x, y) values.
+
+    Returns:
+        :obj:`list` of :obj:`Rect`:  Coordinates of the bounding boxes.
+
+    """
+    x_values = list(map(itemgetter(0), locations))
+    x_min, x_max = min(x_values), max(x_values)
+    y_values = list(map(itemgetter(1), locations))
+    y_min, y_max = min(y_values), max(y_values)
+    return (Rect(x_min, y_min, x_max - x_min,  y_max - y_min))
 
 
 def decode(image, symbols=None):
@@ -146,21 +168,19 @@ def decode(image, symbols=None):
                     data = string_at(zbar_symbol_get_data(symbol))
                     symbol_type = ZBarSymbol(symbol.contents.value).name
 
-                    location = []
                     loc = zbar_symbol_get_loc_size(symbol)
-                    if loc:
-                        location = [
-                            (
-                                zbar_symbol_get_loc_x(symbol, l),
-                                zbar_symbol_get_loc_y(symbol, l)
-                            )
-                            for l in range(loc)
-                        ]
+                    locations = [
+                        (
+                            zbar_symbol_get_loc_x(symbol, l),
+                            zbar_symbol_get_loc_y(symbol, l)
+                        )
+                        for l in RANGEFN(loc)
+                    ]
 
                     results.append(Decoded(
                         data=data,
                         type=symbol_type,
-                        location=location
+                        rect=bounding_box_of_locations(locations)
                     ))
 
                     symbol = zbar_symbol_next(symbol)

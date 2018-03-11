@@ -269,14 +269,14 @@ zbar_symbol_get_loc_size = zbar_function(
 
 zbar_symbol_get_loc_x = zbar_function(
     'zbar_symbol_get_loc_x',
-    c_uint,
+    c_int,
     POINTER(c_int),        # values in ZBARSymbol
     c_uint
 )
 
 zbar_symbol_get_loc_y = zbar_function(
     'zbar_symbol_get_loc_y',
-    c_uint,
+    c_int,
     POINTER(c_int),        # values in ZBARSymbol
     c_uint
 )
