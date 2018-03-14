@@ -1,9 +1,9 @@
 from __future__ import print_function
 
-from operator import itemgetter
 from collections import namedtuple
 from contextlib import contextmanager
 from ctypes import cast, c_void_p, string_at
+from operator import itemgetter
 
 from .pyzbar_error import PyZbarError
 from .wrapper import (
@@ -18,7 +18,6 @@ from .wrapper import (
 
 __all__ = ['decode', 'EXTERNAL_DEPENDENCIES']
 
-RANGEFN = getattr(globals(), 'xrange', range)
 
 # A rectangle
 Rect = namedtuple('Rect', ['left', 'top', 'width', 'height'])
@@ -32,16 +31,16 @@ FOURCC = {
     'GRAY': 1497715271
 }
 
+RANGEFN = getattr(globals(), 'xrange', range)
+
 
 @contextmanager
 def zbar_image():
     """A context manager for `zbar_image`, created and destoyed by
     `zbar_image_create` and `zbar_image_destroy`.
 
-    Args:
-
     Yields:
-        zbar_image: The created image
+        POINTER(zbar_image): The created image
 
     Raises:
         PyZbarError: If the image could not be created.
@@ -61,10 +60,8 @@ def zbar_image_scanner():
     """A context manager for `zbar_image_scanner`, created and destroyed by
     `zbar_image_scanner_create` and `zbar_image_scanner_destroy`.
 
-    Args:
-
     Yields:
-        zbar_image_scanner: The created scanner
+        POINTER(zbar_image_scanner): The created scanner
 
     Raises:
         PyZbarError: If the decoder could not be created.
@@ -80,30 +77,74 @@ def zbar_image_scanner():
 
 
 def bounding_box_of_locations(locations):
-    """Computes bounding boxes from scan locations.
+    """Computes a bounding box from scan locations.
 
     Args:
-        locations: :obj:`list` of tuple (x, y) values.
+        locations: iterable of tuples of ints (x, y).
 
     Returns:
-        :obj:`list` of :obj:`Rect`:  Coordinates of the bounding boxes.
+        `Rect`: Coordinates of the bounding box.
 
     """
     x_values = list(map(itemgetter(0), locations))
     x_min, x_max = min(x_values), max(x_values)
     y_values = list(map(itemgetter(1), locations))
     y_min, y_max = min(y_values), max(y_values)
-    return (Rect(x_min, y_min, x_max - x_min,  y_max - y_min))
+    return Rect(x_min, y_min, x_max - x_min,  y_max - y_min)
 
 
-def decode(image, symbols=None):
+def symbols_for_image(image):
+    """Generator of symbols.
+
+    Args:
+        image: `zbar_image`
+
+    Yields:
+        POINTER(zbar_symbol): Symbol
+    """
+    symbol = zbar_image_first_symbol(image)
+    while symbol:
+        yield symbol
+        symbol = zbar_symbol_next(symbol)
+
+
+def decode_symbols(symbols):
+    """Generator of decoded symbol information.
+
+    Args:
+        image: iterable of instances of `POINTER(zbar_symbol)`
+
+    Yields:
+        Decoded: decoded symbol
+    """
+    for symbol in symbols:
+        data = string_at(zbar_symbol_get_data(symbol))
+        # The 'type' int in a value in the ZBarSymbol enumeration
+        symbol_type = ZBarSymbol(symbol.contents.type).name
+        locations = [
+            (
+                zbar_symbol_get_loc_x(symbol, index),
+                zbar_symbol_get_loc_y(symbol, index)
+            )
+            for index in RANGEFN(zbar_symbol_get_loc_size(symbol))
+        ]
+
+        yield Decoded(
+            data=data,
+            type=symbol_type,
+            rect=bounding_box_of_locations(locations),
+        )
+
+
+def decode(image, symbols=None, scan_locations=False):
     """Decodes datamatrix barcodes in `image`.
 
     Args:
         image: `numpy.ndarray`, `PIL.Image` or tuple (pixels, width, height)
-        symbols (ZBarSymbol): the symbol types to decode; if `None`, use
-            `zbar`'s default behaviour, which (I think) is to decode all
-            symbol types.
+        symbols (ZBarSymbol): the symbol types to decode; if `None`, uses
+            `zbar`'s default behaviour, which is to decode all symbol types.
+        scan_locations (bool): If `True`, results will include scan
+            locations.
 
     Returns:
         :obj:`list` of :obj:`Decoded`: The values decoded from barcodes.
@@ -163,26 +204,6 @@ def decode(image, symbols=None):
             if decoded < 0:
                 raise PyZbarError('Unsupported image format')
             else:
-                symbol = zbar_image_first_symbol(img)
-                while symbol:
-                    data = string_at(zbar_symbol_get_data(symbol))
-                    symbol_type = ZBarSymbol(symbol.contents.value).name
-
-                    loc = zbar_symbol_get_loc_size(symbol)
-                    locations = [
-                        (
-                            zbar_symbol_get_loc_x(symbol, l),
-                            zbar_symbol_get_loc_y(symbol, l)
-                        )
-                        for l in RANGEFN(loc)
-                    ]
-
-                    results.append(Decoded(
-                        data=data,
-                        type=symbol_type,
-                        rect=bounding_box_of_locations(locations)
-                    ))
-
-                    symbol = zbar_symbol_next(symbol)
+                results.extend(decode_symbols(symbols_for_image(img)))
 
     return results

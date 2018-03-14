@@ -21,7 +21,7 @@ pip install tox
 If you use non-standard locations for your Python builds, make the interpreters available on the `PATH` before running `tox`.
 
 ```
-PATH=~/local/python-2.7.13/bin:~/local/python-3.4.6/bin:~/local/python-3.5.3/bin:~/local/python-3.6.0/bin:$PATH
+PATH=~/local/python-2.7.14/bin:~/local/python-3.4.7/bin:~/local/python-3.5.4/bin:~/local/python-3.6.3/bin:$PATH
 tox
 ```
 
@@ -46,8 +46,8 @@ brew install pandoc
 
 2. Build
     Generate the `reStructuredText README.rst` from `README.md` and create
-    source and wheel builds. The `win32` and `win_amd64` will contain the
-    appropriate `zbar.dll` and its dependencies.
+    source and wheel builds. The `win32` and `win_amd64` wheels will
+    contain the appropriate `zbar.dll` and its dependencies.
 
     Including just the DLLs we want is pain...
 
@@ -60,8 +60,8 @@ brew install pandoc
     cat MANIFEST.in.all MANIFEST.in.win32 > MANIFEST.in
     ./setup.py bdist_wheel --plat-name=win32
 
-    # Remove build to prevent win32 DLLs from being included in win64 build
-    rm -rf build 
+    # Remove these dirs to prevent win32 DLLs from being included in win64 build
+    rm -rf build pyzbar.egg-info
     cat MANIFEST.in.all MANIFEST.in.win64 > MANIFEST.in
     ./setup.py bdist_wheel --plat-name=win_amd64
 

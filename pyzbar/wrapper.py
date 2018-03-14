@@ -77,6 +77,17 @@ class zbar_image(Structure):
     pass
 
 
+class zbar_symbol(Structure):
+    """Opaque C++ class with private implementation
+
+    The first item in the structure is an integeger value in the ZBarSymbol
+    enumeration.
+    """
+    _fields_ = [
+        ('type', c_int),
+    ]
+
+
 # Globals populated in load_libzbar
 LIBZBAR = None
 """ctypes.CDLL
@@ -89,6 +100,8 @@ EXTERNAL_DEPENDENCIES = []
 
 def load_libzbar():
     """Loads the zbar shared library and its dependencies.
+
+    Populates the globals LIBZBAR and EXTERNAL_DEPENDENCIES.
     """
     global LIBZBAR
     global EXTERNAL_DEPENDENCIES
@@ -245,44 +258,44 @@ zbar_scan_image = zbar_function(
 
 zbar_image_first_symbol = zbar_function(
     'zbar_image_first_symbol',
-    POINTER(c_int),        # values in ZBarSymbol
+    POINTER(zbar_symbol),
     POINTER(zbar_image)
 )
 
 zbar_symbol_get_data_length = zbar_function(
     'zbar_symbol_get_data_length',
     c_uint,
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_data = zbar_function(
     'zbar_symbol_get_data',
     c_char_p,
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_loc_size = zbar_function(
     'zbar_symbol_get_loc_size',
     c_uint,
-    POINTER(c_int)         # values in ZBARSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_loc_x = zbar_function(
     'zbar_symbol_get_loc_x',
     c_int,
-    POINTER(c_int),        # values in ZBARSymbol
+    POINTER(zbar_symbol),
     c_uint
 )
 
 zbar_symbol_get_loc_y = zbar_function(
     'zbar_symbol_get_loc_y',
     c_int,
-    POINTER(c_int),        # values in ZBARSymbol
+    POINTER(zbar_symbol),
     c_uint
 )
 
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
-    POINTER(c_int),
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol),
+    POINTER(zbar_symbol)
 )
