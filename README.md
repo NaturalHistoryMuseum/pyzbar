@@ -12,7 +12,7 @@ The older [zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
 package is stuck in Python 2.x-land.
 The [zbarlight](https://github.com/Polyconseil/zbarlight/) package doesn't
 provide support for Windows and depends upon Pillow.
-This pure-Python `ctypes`-based package brings `zbar` to Python 2.7 and to
+This pure-Python package uses `ctypes` to bring `zbar` to Python 2.7 and to
 Python 3.4 or greater.
 
 ## Installation

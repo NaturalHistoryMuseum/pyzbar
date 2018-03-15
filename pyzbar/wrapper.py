@@ -19,6 +19,15 @@ c_ulong_p = POINTER(c_ulong)
 """unsigned char* type
 """
 
+# Globals populated in load_libzbar
+LIBZBAR = None
+"""ctypes.CDLL
+"""
+
+EXTERNAL_DEPENDENCIES = []
+"""List of instances of ctypes.CDLL
+"""
+
 
 # Defines and enums
 @unique
@@ -86,16 +95,6 @@ class zbar_symbol(Structure):
     _fields_ = [
         ('type', c_int),
     ]
-
-
-# Globals populated in load_libzbar
-LIBZBAR = None
-"""ctypes.CDLL
-"""
-
-EXTERNAL_DEPENDENCIES = []
-"""Sequence of instances of ctypes.CDLL
-"""
 
 
 def load_libzbar():
