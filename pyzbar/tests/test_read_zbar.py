@@ -9,8 +9,6 @@ if 2 == sys.version_info[0]:
 else:
     from io import StringIO
 
-from PIL import Image
-
 from pyzbar.scripts.read_zbar import main
 
 

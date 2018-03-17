@@ -7,6 +7,7 @@
 
 Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
 [zbar](http://zbar.sourceforge.net/) library.
+Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes.
 
 The older [zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
 package is stuck in Python 2.x-land.
@@ -102,6 +103,14 @@ symbol types
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
 []
 ```
+
+## Windows error message
+If you see an ugly `ImportError` when importing `pyzbar` on Windows you will
+most likely need the
+[Visual C++ Redistributable Packages for Visual Studio 2013]
+(https://www.microsoft.com/en-US/download/details.aspx?id=40784).
+Install `vcredist_x64.exe` if using 64-bit Python, `vcredist_x86.exe` if using
+32-bit Python.
 
 ## License
 

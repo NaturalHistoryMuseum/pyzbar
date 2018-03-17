@@ -12,6 +12,17 @@ from enum import IntEnum, unique
 from pathlib import Path
 
 
+__all__ = [
+    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol',
+    'zbar_image_create', 'zbar_image_destroy', 'zbar_image_first_symbol',
+    'zbar_image_scanner_create', 'zbar_image_scanner_destroy',
+    'zbar_image_scanner_set_config', 'zbar_image_set_data',
+    'zbar_image_set_format', 'zbar_image_set_size', 'zbar_scan_image',
+    'zbar_symbol_get_data', 'zbar_symbol_get_loc_size',
+    'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y', 'zbar_symbol_next'
+]
+
+
 # Types
 c_ubyte_p = POINTER(c_ubyte)
 c_uint_p = POINTER(c_uint)
@@ -138,7 +149,7 @@ def load_libzbar():
 
             try:
                 loaded_dependencies, libzbar = load(Path(''))
-            except OSError as e:
+            except OSError:
                 loaded_dependencies, libzbar = load(Path(__file__).parent)
         else:
             # Assume a shared library on the path
