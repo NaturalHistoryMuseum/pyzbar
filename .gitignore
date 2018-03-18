@@ -6,5 +6,6 @@ dist
 .tox
 README.rst
 .coverage
+htmlcov
 *dll
 MANIFEST.in
