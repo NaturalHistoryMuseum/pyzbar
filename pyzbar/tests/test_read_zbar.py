@@ -9,9 +9,6 @@ if 2 == sys.version_info[0]:
 else:
     from io import StringIO
 
-
-from PIL import Image
-
 from pyzbar.scripts.read_zbar import main
 
 
@@ -36,7 +33,6 @@ class TestReadZbar(unittest.TestCase):
             expected = "b'Thalassiodracon'"
 
         self.assertEqual(expected, stdout.getvalue().strip())
-
 
     def test_read_code128(self):
         "Read CODE 128 barcodes"

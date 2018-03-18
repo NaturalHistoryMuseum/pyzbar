@@ -11,6 +11,27 @@ from ctypes.util import find_library
 from enum import IntEnum, unique
 from pathlib import Path
 
+from . import zbar_library
+
+
+__all__ = [
+    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol',
+    'zbar_image_create', 'zbar_image_destroy', 'zbar_image_first_symbol',
+    'zbar_image_scanner_create', 'zbar_image_scanner_destroy',
+    'zbar_image_scanner_set_config', 'zbar_image_set_data',
+    'zbar_image_set_format', 'zbar_image_set_size', 'zbar_scan_image',
+    'zbar_symbol_get_data', 'zbar_symbol_get_loc_size',
+    'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y', 'zbar_symbol_next'
+]
+
+# Globals populated in load_libzbar
+LIBZBAR = None
+"""ctypes.CDLL
+"""
+
+EXTERNAL_DEPENDENCIES = []
+"""List of instances of ctypes.CDLL. Helpful when freezing.
+"""
 
 # Types
 c_ubyte_p = POINTER(c_ubyte)
@@ -23,45 +44,45 @@ c_ulong_p = POINTER(c_ulong)
 # Defines and enums
 @unique
 class ZBarSymbol(IntEnum):
-    NONE        =      0  # /**< no symbol decoded */
-    PARTIAL     =      1  # /**< intermediate status */
-    EAN2        =      2  # /**< GS1 2-digit add-on */
-    EAN5        =      5  # /**< GS1 5-digit add-on */
-    EAN8        =      8  # /**< EAN-8 */
-    UPCE        =      9  # /**< UPC-E */
-    ISBN10      =     10  # /**< ISBN-10 (from EAN-13). @since 0.4 */
-    UPCA        =     12  # /**< UPC-A */
-    EAN13       =     13  # /**< EAN-13 */
-    ISBN13      =     14  # /**< ISBN-13 (from EAN-13). @since 0.4 */
-    COMPOSITE   =     15  # /**< EAN/UPC composite */
-    I25         =     25  # /**< Interleaved 2 of 5. @since 0.4 */
-    DATABAR     =     34  # /**< GS1 DataBar (RSS). @since 0.11 */
-    DATABAR_EXP =     35  # /**< GS1 DataBar Expanded. @since 0.11 */
-    CODABAR     =     38  # /**< Codabar. @since 0.11 */
-    CODE39      =     39  # /**< Code 39. @since 0.4 */
-    PDF417      =     57  # /**< PDF417. @since 0.6 */
-    QRCODE      =     64  # /**< QR Code. @since 0.10 */
-    CODE93      =     93  # /**< Code 93. @since 0.11 */
-    CODE128     =    128  # /**< Code 128 */
+    NONE = 0          # /**< no symbol decoded */
+    PARTIAL = 1       # /**< intermediate status */
+    EAN2 = 2          # /**< GS1 2-digit add-on */
+    EAN5 = 5          # /**< GS1 5-digit add-on */
+    EAN8 = 8          # /**< EAN-8 */
+    UPCE = 9          # /**< UPC-E */
+    ISBN10 = 10       # /**< ISBN-10 (from EAN-13). @since 0.4 */
+    UPCA = 12         # /**< UPC-A */
+    EAN13 = 13        # /**< EAN-13 */
+    ISBN13 = 14       # /**< ISBN-13 (from EAN-13). @since 0.4 */
+    COMPOSITE = 15    # /**< EAN/UPC composite */
+    I25 = 25          # /**< Interleaved 2 of 5. @since 0.4 */
+    DATABAR = 34      # /**< GS1 DataBar (RSS). @since 0.11 */
+    DATABAR_EXP = 35  # /**< GS1 DataBar Expanded. @since 0.11 */
+    CODABAR = 38      # /**< Codabar. @since 0.11 */
+    CODE39 = 39       # /**< Code 39. @since 0.4 */
+    PDF417 = 57       # /**< PDF417. @since 0.6 */
+    QRCODE = 64       # /**< QR Code. @since 0.10 */
+    CODE93 = 93       # /**< Code 93. @since 0.11 */
+    CODE128 = 128     # /**< Code 128 */
 
 
 @unique
 class ZBarConfig(IntEnum):
-    CFG_ENABLE = 0         # /**< enable symbology/feature */
-    CFG_ADD_CHECK = 1      # /**< enable check digit when optional */
-    CFG_EMIT_CHECK = 2     # /**< return check digit when present */
-    CFG_ASCII = 3          # /**< enable full ASCII character set */
-    CFG_NUM = 4            # /**< number of boolean decoder configs */
+    CFG_ENABLE = 0          # /**< enable symbology/feature */
+    CFG_ADD_CHECK = 1       # /**< enable check digit when optional */
+    CFG_EMIT_CHECK = 2      # /**< return check digit when present */
+    CFG_ASCII = 3           # /**< enable full ASCII character set */
+    CFG_NUM = 4             # /**< number of boolean decoder configs */
 
-    CFG_MIN_LEN = 0x20     # /**< minimum data length for valid decode */
-    CFG_MAX_LEN = 0x21     # /**< maximum data length for valid decode */
+    CFG_MIN_LEN = 0x20      # /**< minimum data length for valid decode */
+    CFG_MAX_LEN = 0x21      # /**< maximum data length for valid decode */
 
-    CFG_UNCERTAINTY = 0x40 # /**< required video consistency frames */
+    CFG_UNCERTAINTY = 0x40  # /**< required video consistency frames */
 
-    CFG_POSITION = 0x80    # /**< enable scanner to collect position data */
+    CFG_POSITION = 0x80     # /**< enable scanner to collect position data */
 
-    CFG_X_DENSITY = 0x100  # /**< image scanner vertical scan density */
-    CFG_Y_DENSITY = 0x101  # /**< image scanner horizontal scan density */
+    CFG_X_DENSITY = 0x100   # /**< image scanner vertical scan density */
+    CFG_Y_DENSITY = 0x101   # /**< image scanner horizontal scan density */
 
 
 # Structs
@@ -77,67 +98,28 @@ class zbar_image(Structure):
     pass
 
 
-# Globals populated in load_libzbar
-LIBZBAR = None
-"""ctypes.CDLL
-"""
+class zbar_symbol(Structure):
+    """Opaque C++ class with private implementation
 
-EXTERNAL_DEPENDENCIES = []
-"""Sequence of instances of ctypes.CDLL
-"""
+    The first item in the structure is an integeger value in the ZBarSymbol
+    enumeration.
+    """
+    _fields_ = [
+        ('type', c_int),
+    ]
 
 
 def load_libzbar():
     """Loads the zbar shared library and its dependencies.
+
+    Populates the globals LIBZBAR and EXTERNAL_DEPENDENCIES.
     """
     global LIBZBAR
     global EXTERNAL_DEPENDENCIES
     if not LIBZBAR:
-        if 'Windows' == platform.system():
-            # Possible scenarios here
-            #   1. Run from source, DLLs are in pyzbar directory
-            #       cdll.LoadLibrary() imports DLLs in repo root directory
-            #   2. Wheel install into CPython installation
-            #       cdll.LoadLibrary() imports DLLs in package directory
-            #   3. Wheel install into virtualenv
-            #       cdll.LoadLibrary() imports DLLs in package directory
-            #   4. Frozen
-            #       cdll.LoadLibrary() imports DLLs alongside executable
-
-            # 'libzbar-64.dll' and 'libzbar-32.dll' have a dependent DLL
-            # 'libiconv.dll' and 'libiconv-2.dll' respectively.
-            if sys.maxsize > 2**32:
-                # 64-bit
-                fname = 'libzbar-64.dll'
-                dependencies = ['libiconv.dll']
-            else:
-                # 32-bit
-                fname = 'libzbar-32.dll'
-                dependencies = ['libiconv-2.dll']
-
-            def load(dir):
-                # Load dependencies before loading libzbar dll
-                deps = [
-                    cdll.LoadLibrary(str(dir.joinpath(dep)))
-                    for dep in dependencies
-                ]
-                libzbar = cdll.LoadLibrary(str(dir.joinpath(fname)))
-                return deps, libzbar
-
-            try:
-                loaded_dependencies, libzbar = load(Path(''))
-            except OSError as e:
-                loaded_dependencies, libzbar = load(Path(__file__).parent)
-        else:
-            # Assume a shared library on the path
-            path = find_library('zbar')
-            if not path:
-                raise ImportError('Unable to find zbar shared library')
-            libzbar = cdll.LoadLibrary(path)
-            loaded_dependencies = []
-
+        libzbar, dependencies = zbar_library.load()
         LIBZBAR = libzbar
-        EXTERNAL_DEPENDENCIES = [LIBZBAR] + loaded_dependencies
+        EXTERNAL_DEPENDENCIES = [LIBZBAR] + dependencies
 
     return LIBZBAR
 
@@ -195,10 +177,10 @@ zbar_parse_config = zbar_function(
 zbar_image_scanner_set_config = zbar_function(
     'zbar_image_scanner_set_config',
     c_int,
-    POINTER(zbar_image_scanner), # scanner
-    c_int,                       # symbology - values in ZBarSymbol
-    c_int,                       # config - values in ZBarConfig
-    c_int                        # value
+    POINTER(zbar_image_scanner),  # scanner
+    c_int,                        # symbology - values in ZBarSymbol
+    c_int,                        # config - values in ZBarConfig
+    c_int                         # value
 )
 
 zbar_image_create = zbar_function(
@@ -245,44 +227,44 @@ zbar_scan_image = zbar_function(
 
 zbar_image_first_symbol = zbar_function(
     'zbar_image_first_symbol',
-    POINTER(c_int),        # values in ZBarSymbol
+    POINTER(zbar_symbol),
     POINTER(zbar_image)
 )
 
 zbar_symbol_get_data_length = zbar_function(
     'zbar_symbol_get_data_length',
     c_uint,
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_data = zbar_function(
     'zbar_symbol_get_data',
     c_char_p,
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_loc_size = zbar_function(
     'zbar_symbol_get_loc_size',
     c_uint,
-    POINTER(c_int)         # values in ZBARSymbol
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_get_loc_x = zbar_function(
     'zbar_symbol_get_loc_x',
     c_int,
-    POINTER(c_int),        # values in ZBARSymbol
+    POINTER(zbar_symbol),
     c_uint
 )
 
 zbar_symbol_get_loc_y = zbar_function(
     'zbar_symbol_get_loc_y',
     c_int,
-    POINTER(c_int),        # values in ZBARSymbol
+    POINTER(zbar_symbol),
     c_uint
 )
 
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
-    POINTER(c_int),
-    POINTER(c_int)         # values in ZBarSymbol
+    POINTER(zbar_symbol),
+    POINTER(zbar_symbol)
 )

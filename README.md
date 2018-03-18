@@ -5,29 +5,29 @@
 [![Travis status](https://travis-ci.org/NaturalHistoryMuseum/pyzbar.svg?branch=master)](https://travis-ci.org/NaturalHistoryMuseum/pyzbar)
 [![Coverage Status](https://coveralls.io/repos/github/NaturalHistoryMuseum/pyzbar/badge.svg?branch=master)](https://coveralls.io/github/NaturalHistoryMuseum/pyzbar?branch=master)
 
-A `ctypes`-based Python wrapper around the [zbar](http://zbar.sourceforge.net/)
-barcode reader.
+Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
+[zbar](http://zbar.sourceforge.net/) library.
+Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes.
 
-The
-[zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
-wrapper is stuck in Python 2.x-land.
-The [zbarlight](https://github.com/Polyconseil/zbarlight/) wrapper doesn't
+The older [zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
+package is stuck in Python 2.x-land.
+The [zbarlight](https://github.com/Polyconseil/zbarlight/) package doesn't
 provide support for Windows and depends upon Pillow.
-This `ctypes`-based wrapper brings `zbar` to Python 2.7 and to Python 3.4 or
-greater.
+This pure-Python package uses `ctypes` to bring `zbar` to Python 2.7 and
+Python 3.4 or greater.
 
 ## Installation
 
 The `zbar` `DLL`s are included with the Windows Python wheels.
 On other operating systems, you will need to install the `zbar` shared library.
 
-On Mac OS X:
+Mac OS X:
 
 ```
 brew install zbar
 ```
 
-On Linux:
+Linux:
 
 ```
 sudo apt-get install libzbar0
@@ -90,9 +90,8 @@ Traceback (most recent call last):
 pyzbar.pyzbar_error.PyZbarError: Unsupported bits-per-pixel [24]
 ```
 
-`zbar`'s default behaviour is (I think) to decode all symbol types.
-You can ask `zbar` to look for just your symbol types (I have no idea of the
-effect of this on performance)
+The default behaviour is to decode all symbol types. You can look for just your
+symbol types
 
 ```
 >>> from pyzbar.pyzbar import ZBarSymbol
@@ -104,6 +103,14 @@ effect of this on performance)
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
 []
 ```
+
+## Windows error message
+If you see an ugly `ImportError` when importing `pyzbar` on Windows you will
+most likely need the
+[Visual C++ Redistributable Packages for Visual Studio 2013]
+(https://www.microsoft.com/en-US/download/details.aspx?id=40784).
+Install `vcredist_x64.exe` if using 64-bit Python, `vcredist_x86.exe` if using
+32-bit Python.
 
 ## License
 
