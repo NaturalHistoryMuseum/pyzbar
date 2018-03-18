@@ -25,7 +25,7 @@ setup_data = {
     'name': 'pyzbar',
     'version': pyzbar.__version__,
     'author': 'Lawrence Hudson',
-    'author_email': 'l.hudson@nhm.ac.uk',
+    'author_email': 'quicklizard@googlemail.com',
     'url': URL,
     'license': 'MIT',
     'description': pyzbar.__doc__,

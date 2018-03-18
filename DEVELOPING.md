@@ -73,13 +73,12 @@ brew install pandoc
     ```
     mkvirtualenv pypi
     pip install twine
-    twine register -r pypitest dist/pyzbar-0.1.1-py2.py3-none-any.whl
     twine upload -r pypitest dist/*
     ```
 
 4. Test the release to pypitest
 
-    * Check https://testpypi.python.org/pypi/pyzbar/
+    * Check https://test.pypi.org/project/pyzbar/
 
     * If you are on Windows
 
