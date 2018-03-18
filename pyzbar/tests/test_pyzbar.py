@@ -3,6 +3,12 @@ import unittest
 
 from pathlib import Path
 
+try:
+    from unittest.mock import call, patch
+except ImportError:
+    # Python 2
+    from mock import call, patch
+
 import numpy as np
 
 from PIL import Image
@@ -45,9 +51,10 @@ class TestDecode(unittest.TestCase):
     ]
 
     def setUp(self):
-        self.code128 = Image.open(str(TESTDATA.joinpath('code128.png')))
-        self.qrcode = Image.open(str(TESTDATA.joinpath('qrcode.png')))
-        self.empty = Image.open(str(TESTDATA.joinpath('empty.png')))
+        self.code128, self.qrcode, self.empty = (
+            Image.open(str(TESTDATA.joinpath(fname)))
+            for fname in ('code128.png', 'qrcode.png', 'empty.png')
+        )
         self.maxDiff = None
 
     def tearDown(self):
@@ -114,6 +121,24 @@ class TestDecode(unittest.TestCase):
         self.assertTrue(
             any('libzbar' in d._name for d in EXTERNAL_DEPENDENCIES)
         )
+
+    @patch('pyzbar.pyzbar.zbar_image_create')
+    def test_zbar_image_create_fail(self, zbar_image_create):
+        zbar_image_create.return_value = None
+        self.assertRaises(PyZbarError, decode, self.code128)
+        zbar_image_create.assert_called_once_with()
+
+    @patch('pyzbar.pyzbar.zbar_image_scanner_create')
+    def test_zbar_image_scanner_create_fail(self, zbar_image_scanner_create):
+        zbar_image_scanner_create.return_value = None
+        self.assertRaises(PyZbarError, decode, self.code128)
+        zbar_image_scanner_create.assert_called_once_with()
+
+    @patch('pyzbar.pyzbar.zbar_scan_image')
+    def test_zbar_scan_image_fail(self, zbar_scan_image):
+        zbar_scan_image.return_value = None
+        self.assertRaises(PyZbarError, decode, self.code128)
+        self.assertEqual(1, zbar_scan_image.call_count)
 
 
 if __name__ == '__main__':
