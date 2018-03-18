@@ -136,7 +136,7 @@ class TestDecode(unittest.TestCase):
 
     @patch('pyzbar.pyzbar.zbar_scan_image')
     def test_zbar_scan_image_fail(self, zbar_scan_image):
-        zbar_scan_image.return_value = None
+        zbar_scan_image.return_value = -1
         self.assertRaises(PyZbarError, decode, self.code128)
         self.assertEqual(1, zbar_scan_image.call_count)
 
