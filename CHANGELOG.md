@@ -1,3 +1,7 @@
+### v0.1.5
+
+* #11 Barcode locations
+
 ### v0.1.4
 
 * #9 Python 3.6

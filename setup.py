@@ -46,8 +46,9 @@ setup_data = {
     },
     'tests_require': [
         # TODO How to specify OpenCV? 'cv2>=2.4.8',
-        PILLOW,
+        'mock>=2.0.0; python_version=="2.7"',
         'numpy>=1.8.2',
+        PILLOW,
     ],
     'include_package_data': True,
     'classifiers': [
