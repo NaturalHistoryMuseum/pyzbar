@@ -1,3 +1,7 @@
+### v0.1.6
+
+* #19 Improve error messages
+
 ### v0.1.5
 
 * #11 Barcode locations
