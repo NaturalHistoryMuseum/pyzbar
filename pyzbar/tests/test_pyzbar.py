@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 try:
-    from unittest.mock import call, patch
+    from unittest.mock import call, patch, MagicMock
 except ImportError:
     # Python 2
     from mock import call, patch
@@ -95,8 +95,7 @@ class TestDecode(unittest.TestCase):
     def test_empty(self):
         "Do not show any output for an image that does not contain a barcode"
         res = decode(self.empty)
-        expected = []
-        self.assertEqual(expected, res)
+        self.assertEqual([], res)
 
     def test_decode_numpy(self):
         "Read image using Pillow and convert to numpy.ndarray"
@@ -106,9 +105,7 @@ class TestDecode(unittest.TestCase):
     @unittest.skipIf(cv2 is None, 'OpenCV not installed')
     def test_decode_opencv(self):
         "Read image using OpenCV"
-        res = decode(
-            cv2.imread(str(TESTDATA.joinpath('code128.png')))
-        )
+        res = decode(cv2.imread(str(TESTDATA.joinpath('code128.png'))))
         self.assertEqual(self.EXPECTED_CODE128, res)
 
     def test_external_dependencies(self):
@@ -125,20 +122,48 @@ class TestDecode(unittest.TestCase):
     @patch('pyzbar.pyzbar.zbar_image_create')
     def test_zbar_image_create_fail(self, zbar_image_create):
         zbar_image_create.return_value = None
-        self.assertRaises(PyZbarError, decode, self.code128)
+        self.assertRaisesRegexp(
+            PyZbarError, 'Could not create zbar image', decode, self.code128
+        )
         zbar_image_create.assert_called_once_with()
 
     @patch('pyzbar.pyzbar.zbar_image_scanner_create')
     def test_zbar_image_scanner_create_fail(self, zbar_image_scanner_create):
         zbar_image_scanner_create.return_value = None
-        self.assertRaises(PyZbarError, decode, self.code128)
+        self.assertRaisesRegexp(
+            PyZbarError, 'Could not create image scanner', decode, self.code128
+        )
         zbar_image_scanner_create.assert_called_once_with()
 
     @patch('pyzbar.pyzbar.zbar_scan_image')
     def test_zbar_scan_image_fail(self, zbar_scan_image):
         zbar_scan_image.return_value = -1
-        self.assertRaises(PyZbarError, decode, self.code128)
+        self.assertRaisesRegexp(
+            PyZbarError, 'Unsupported image format', decode, self.code128
+        )
         self.assertEqual(1, zbar_scan_image.call_count)
+
+    def test_unsupported_bits_per_pixel(self):
+        # 16 bits-per-pixel
+        data = (list(range(3 * 3 * 2)), 3, 3)
+        self.assertRaisesRegexp(
+            PyZbarError,
+            'Unsupported bits-per-pixel \[16\]. Only \[8\] is supported.',
+            decode, data
+        )
+        self.assertRaises(PyZbarError, decode, data)
+
+    def test_inconsistent_dimensions(self):
+        # Ten bytes but width x height indicates nine bytes
+        data = (list(range(10)), 3, 3)
+        self.assertRaisesRegexp(
+            PyZbarError,
+            (
+                'Inconsistent dimensions: image data of 10 bytes is not '
+                'divisible by \(width x height = 9\)'
+            ),
+            decode, data
+        )
 
 
 if __name__ == '__main__':
