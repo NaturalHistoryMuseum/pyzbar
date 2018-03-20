@@ -111,6 +111,10 @@ most likely need the
 Install `vcredist_x64.exe` if using 64-bit Python, `vcredist_x86.exe` if using
 32-bit Python.
 
+## Contributors
+
+* Alex (@globophobe) - first implementation of barcode locations
+
 ## License
 
 `pyzbar` is distributed under the MIT license (see `LICENCE.txt`).
