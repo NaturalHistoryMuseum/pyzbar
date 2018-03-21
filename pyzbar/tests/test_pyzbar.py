@@ -20,7 +20,7 @@ except ImportError:
 
 
 from pyzbar.pyzbar import (
-    decode, Rect, Decoded, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 from pyzbar.pyzbar_error import PyZbarError
 
@@ -33,12 +33,14 @@ class TestDecode(unittest.TestCase):
         Decoded(
             data=b'Foramenifera',
             type='CODE128',
-            rect=Rect(left=37, top=550, width=324, height=76)
+            rect=Rect(left=37, top=550, width=324, height=76),
+            polygon=[(37, 551), (37, 625), (361, 626), (361, 550)]
         ),
         Decoded(
             data=b'Rana temporaria',
             type='CODE128',
-            rect=Rect(left=4, top=0, width=390, height=76)
+            rect=Rect(left=4, top=0, width=390, height=76),
+            polygon=[(4, 1), (4, 75), (394, 76), (394, 0)]
         )
     ]
 
@@ -46,7 +48,8 @@ class TestDecode(unittest.TestCase):
         Decoded(
             b'Thalassiodracon',
             type='QRCODE',
-            rect=Rect(left=27, top=27, width=145, height=145)
+            rect=Rect(left=27, top=27, width=145, height=145),
+            polygon=[(27, 27), (27, 172), (172, 172), (172, 27)]
         )
     ]
 
