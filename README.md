@@ -183,7 +183,7 @@ symbol types
 
 ## Bounding boxes and polygon
 
-**TODO** Description and graphical representation
+![Two barcodes with bounding boxes and polygons](./bounding_box_and_polygon.png)
 
 ## Windows error message
 If you see an ugly `ImportError` when importing `pyzbar` on Windows you will
