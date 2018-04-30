@@ -181,7 +181,9 @@ symbol types
 []
 ```
 
-## Bounding boxes and polygon
+## Bounding boxes and polygons
+
+The blue and pink boxes show `rect` and `polygon`, respectively.
 
 ![Two barcodes with bounding boxes and polygons](./bounding_box_and_polygon.png)
 
