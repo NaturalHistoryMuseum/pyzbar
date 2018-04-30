@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from collections import namedtuple
 from contextlib import contextmanager
 from ctypes import cast, c_void_p, string_at
@@ -91,7 +89,7 @@ def _decode_symbols(symbols):
     """Generator of decoded symbol information.
 
     Args:
-        image: iterable of instances of `POINTER(zbar_symbol)`
+        symbols: iterable of instances of `POINTER(zbar_symbol)`
 
     Yields:
         Decoded: decoded symbol
