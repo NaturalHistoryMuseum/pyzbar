@@ -7,14 +7,16 @@
 
 Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
 [zbar](http://zbar.sourceforge.net/) library.
-Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes.
+
+* Pure python
+* Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes
+* No dependencies, other than the zbar library itself
+* Tested on Python 2.7, and Python 3.4 to 3.6
 
 The older [zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
 package is stuck in Python 2.x-land.
 The [zbarlight](https://github.com/Polyconseil/zbarlight/) package doesn't
 provide support for Windows and depends upon Pillow.
-This pure-Python package uses `ctypes` to bring `zbar` to Python 2.7 and
-Python 3.4 or greater.
 
 ## Installation
 
