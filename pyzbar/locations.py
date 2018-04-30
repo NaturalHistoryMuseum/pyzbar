@@ -62,7 +62,9 @@ def convex_hull(points):
     # Discard duplicates and sort by x then y
     points = sorted(set(points))
 
-    if len(points) < 2:
-        return points
-    else:
-        return list(map(Point._make, chain(go(points), go(reversed(points)))))
+    # Algorithm needs at least two points
+    hull = (
+        points if len(points) < 2 else chain(go(points), go(reversed(points)))
+    )
+
+    return list(map(Point._make, hull))
