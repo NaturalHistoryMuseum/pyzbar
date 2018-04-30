@@ -9,3 +9,5 @@ README.rst
 htmlcov
 *dll
 MANIFEST.in
+bounding_box_and_polygon.png
+
