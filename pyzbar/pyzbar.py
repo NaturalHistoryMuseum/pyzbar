@@ -1,10 +1,8 @@
-from __future__ import print_function
-
 from collections import namedtuple
 from contextlib import contextmanager
 from ctypes import cast, c_void_p, string_at
-from operator import itemgetter
 
+from .locations import bounding_box, convex_hull, Point, Rect
 from .pyzbar_error import PyZbarError
 from .wrapper import (
     zbar_image_scanner_set_config,
@@ -16,14 +14,10 @@ from .wrapper import (
     zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 
-__all__ = ['decode', 'EXTERNAL_DEPENDENCIES']
+__all__ = ['decode', 'Point', 'Rect', 'Decoded', 'EXTERNAL_DEPENDENCIES']
 
 
-# A rectangle
-Rect = namedtuple('Rect', ['left', 'top', 'width', 'height'])
-
-# Results of reading a barcode
-Decoded = namedtuple('Decoded', ['data', 'type', 'rect'])
+Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon'])
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 _FOURCC = {
@@ -76,23 +70,6 @@ def _image_scanner():
             zbar_image_scanner_destroy(scanner)
 
 
-def _bounding_box_of_locations(locations):
-    """Computes a bounding box from scan locations.
-
-    Args:
-        locations: iterable of tuples of ints (x, y).
-
-    Returns:
-        `Rect`: Coordinates of the bounding box.
-
-    """
-    x_values = list(map(itemgetter(0), locations))
-    x_min, x_max = min(x_values), max(x_values)
-    y_values = list(map(itemgetter(1), locations))
-    y_min, y_max = min(y_values), max(y_values)
-    return Rect(x_min, y_min, x_max - x_min,  y_max - y_min)
-
-
 def _symbols_for_image(image):
     """Generator of symbols.
 
@@ -112,7 +89,7 @@ def _decode_symbols(symbols):
     """Generator of decoded symbol information.
 
     Args:
-        image: iterable of instances of `POINTER(zbar_symbol)`
+        symbols: iterable of instances of `POINTER(zbar_symbol)`
 
     Yields:
         Decoded: decoded symbol
@@ -121,18 +98,19 @@ def _decode_symbols(symbols):
         data = string_at(zbar_symbol_get_data(symbol))
         # The 'type' int in a value in the ZBarSymbol enumeration
         symbol_type = ZBarSymbol(symbol.contents.type).name
-        locations = [
+        polygon = convex_hull(
             (
                 zbar_symbol_get_loc_x(symbol, index),
                 zbar_symbol_get_loc_y(symbol, index)
             )
             for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
-        ]
+        )
 
         yield Decoded(
             data=data,
             type=symbol_type,
-            rect=_bounding_box_of_locations(locations),
+            rect=bounding_box(polygon),
+            polygon=polygon
         )
 
 

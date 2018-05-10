@@ -20,7 +20,7 @@ except ImportError:
 
 
 from pyzbar.pyzbar import (
-    decode, Rect, Decoded, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 from pyzbar.pyzbar_error import PyZbarError
 
@@ -33,12 +33,14 @@ class TestDecode(unittest.TestCase):
         Decoded(
             data=b'Foramenifera',
             type='CODE128',
-            rect=Rect(left=37, top=550, width=324, height=76)
+            rect=Rect(left=37, top=550, width=324, height=76),
+            polygon=[(37, 551), (37, 625), (361, 626), (361, 550)]
         ),
         Decoded(
             data=b'Rana temporaria',
             type='CODE128',
-            rect=Rect(left=4, top=0, width=390, height=76)
+            rect=Rect(left=4, top=0, width=390, height=76),
+            polygon=[(4, 1), (4, 75), (394, 76), (394, 0)]
         )
     ]
 
@@ -46,14 +48,30 @@ class TestDecode(unittest.TestCase):
         Decoded(
             b'Thalassiodracon',
             type='QRCODE',
-            rect=Rect(left=27, top=27, width=145, height=145)
+            rect=Rect(left=27, top=27, width=145, height=145),
+            polygon=[(27, 27), (27, 172), (172, 172), (172, 27)]
         )
     ]
 
+    # Two barcodes, both with same content
+    EXPECTED_QRCODE_ROTATED = [
+        Decoded(
+            data=b'Thalassiodracon',
+            type='QRCODE',
+            rect=Rect(left=173, top=10, width=205, height=205),
+            polygon=[(173, 113), (276, 215), (378, 113), (276, 10)]),
+        Decoded(
+            data=b'Thalassiodracon',
+            type='QRCODE',
+            rect=Rect(left=32, top=208, width=158, height=158),
+            polygon=[(32, 352), (177, 366), (190, 222), (46, 208)])
+    ]
+
     def setUp(self):
-        self.code128, self.qrcode, self.empty = (
+        self.code128, self.qrcode, self.qrcode_rotated, self.empty = (
             Image.open(str(TESTDATA.joinpath(fname)))
-            for fname in ('code128.png', 'qrcode.png', 'empty.png')
+            for fname in
+            ('code128.png', 'qrcode.png', 'qrcode_rotated.png', 'empty.png')
         )
         self.maxDiff = None
 
@@ -66,9 +84,15 @@ class TestDecode(unittest.TestCase):
         self.assertEqual(self.EXPECTED_CODE128, res)
 
     def test_decode_qrcode(self):
-        "Read both barcodes in `qrcode.png`"
+        "Read barcode in `qrcode.png`"
         res = decode(self.qrcode)
         self.assertEqual(self.EXPECTED_QRCODE, res)
+
+    def test_decode_qrcode_rotated(self):
+        "Read barcode in `qrcode_rotated.png`"
+        # Test computation of the polygon around the barcode
+        res = decode(self.qrcode_rotated)
+        self.assertEqual(self.EXPECTED_QRCODE_ROTATED, res)
 
     def test_symbols(self):
         "Read only qrcodes in `qrcode.png`"

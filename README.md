@@ -7,14 +7,17 @@
 
 Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
 [zbar](http://zbar.sourceforge.net/) library.
-Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes.
+
+* Pure python
+* Works with PIL / Pillow images, OpenCV / numpy `ndarray`s, and raw bytes
+* Decodes locations of barcodes
+* No dependencies, other than the zbar library itself
+* Tested on Python 2.7, and Python 3.4 to 3.6
 
 The older [zbar](https://sourceforge.net/p/zbar/code/ci/default/tree/python/)
 package is stuck in Python 2.x-land.
 The [zbarlight](https://github.com/Polyconseil/zbarlight/) package doesn't
 provide support for Windows and depends upon Pillow.
-This pure-Python package uses `ctypes` to bring `zbar` to Python 2.7 and
-Python 3.4 or greater.
 
 ## Installation
 
@@ -49,8 +52,24 @@ The `decode` function accepts instances of `PIL.Image`.
 >>> from pyzbar.pyzbar import decode
 >>> from PIL import Image
 >>> decode(Image.open('pyzbar/tests/code128.png'))
-[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
-Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
+[
+    Decoded(
+        data=b'Foramenifera', type='CODE128',
+        rect=Rect(left=37, top=550, width=324, height=76),
+        polygon=[
+            Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
+            Point(x=361, y=550)
+        ]
+    )
+    Decoded(
+        data=b'Rana temporaria', type='CODE128',
+        rect=Rect(left=4, top=0, width=390, height=76),
+        polygon=[
+            Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
+            Point(x=394, y=0)
+        ]
+    )
+]
 ```
 
 It also accepts instances of `numpy.ndarray`, which might come from loading
@@ -59,8 +78,24 @@ images using [OpenCV](http://opencv.org/).
 ```
 >>> import cv2
 >>> decode(cv2.imread('pyzbar/tests/code128.png'))
-[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
-Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
+[
+    Decoded(
+        data=b'Foramenifera', type='CODE128',
+        rect=Rect(left=37, top=550, width=324, height=76),
+        polygon=[
+            Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
+            Point(x=361, y=550)
+        ]
+    )
+    Decoded(
+        data=b'Rana temporaria', type='CODE128',
+        rect=Rect(left=4, top=0, width=390, height=76),
+        polygon=[
+            Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
+            Point(x=394, y=0)
+        ]
+    )
+]
 ```
 
 You can also provide a tuple `(pixels, width, height)`, where the image data
@@ -72,14 +107,46 @@ is eight bits-per-pixel.
 
 >>> # 8 bpp by considering just the blue channel
 >>> decode((image[:, :, 0].astype('uint8').tobytes(), width, height))
-[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
-Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
+[
+    Decoded(
+        data=b'Foramenifera', type='CODE128',
+        rect=Rect(left=37, top=550, width=324, height=76),
+        polygon=[
+            Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
+            Point(x=361, y=550)
+        ]
+    )
+    Decoded(
+        data=b'Rana temporaria', type='CODE128',
+        rect=Rect(left=4, top=0, width=390, height=76),
+        polygon=[
+            Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
+            Point(x=394, y=0)
+        ]
+    )
+]
 
 >>> # 8 bpp by converting image to greyscale
 >>> grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 >>> decode((grey.tobytes(), width, height))
-[Decoded(data=b'Foramenifera', type='CODE128', rect=Rect(left=37, top=550, width=324, height=76)),
-Decoded(data=b'Rana temporaria', type='CODE128', rect=Rect(left=4, top=0, width=390, height=76))]
+[
+    Decoded(
+        data=b'Foramenifera', type='CODE128',
+        rect=Rect(left=37, top=550, width=324, height=76),
+        polygon=[
+            Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
+            Point(x=361, y=550)
+        ]
+    )
+    Decoded(
+        data=b'Rana temporaria', type='CODE128',
+        rect=Rect(left=4, top=0, width=390, height=76),
+        polygon=[
+            Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
+            Point(x=394, y=0)
+        ]
+    )
+]
 
 >>> # If you don't provide 8 bpp
 >>> decode((image.tobytes(), width, height))
@@ -97,12 +164,30 @@ symbol types
 >>> from pyzbar.pyzbar import ZBarSymbol
 >>> # Look for just qrcode
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.QRCODE])
-[Decoded(data=b'Thalassiodracon', type='QRCODE', rect=Rect(left=27, top=27, width=145, height=145))]
+[
+    Decoded(
+        data=b'Thalassiodracon', type='QRCODE',
+        rect=Rect(left=27, top=27, width=145, height=145),
+        polygon=[
+            Point(x=27, y=27), Point(x=27, y=172), Point(x=172, y=172),
+            Point(x=172, y=27)
+        ]
+    )
+]
+
 
 >>> # If we look for just code128, the qrcodes in the image will not be detected
 >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
 []
 ```
+
+## Bounding boxes and polygons
+
+The blue and pink boxes show `rect` and `polygon`, respectively, for barcodes in
+`pyzbar/tests/qrcode.png`
+(see [./bounding_box_and_polygon.py](bounding_box_and_polygon.py)).
+
+![Two barcodes with bounding boxes and polygons](./bounding_box_and_polygon.png)
 
 ## Windows error message
 If you see an ugly `ImportError` when importing `pyzbar` on Windows you will

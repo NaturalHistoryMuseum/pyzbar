@@ -1,6 +1,7 @@
 ### v0.1.6
 
 * #19 Improve error messages
+* #21 Polygons around barcodes
 
 ### v0.1.5
 
