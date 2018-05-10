@@ -21,7 +21,7 @@ pip install tox
 If you use non-standard locations for your Python builds, make the interpreters available on the `PATH` before running `tox`.
 
 ```
-PATH=~/local/python-2.7.14/bin:~/local/python-3.4.8/bin:~/local/python-3.5.5/bin:~/local/python-3.6.4/bin:$PATH
+PATH=~/local/python-2.7.14/bin:~/local/python-3.4.8/bin:~/local/python-3.5.5/bin:~/local/python-3.6.5/bin:$PATH
 tox
 ```
 
