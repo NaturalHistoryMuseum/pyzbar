@@ -1,3 +1,7 @@
+### v0.1.7
+
+Fix display of images in README
+
 ### v0.1.6
 
 * #19 Improve error messages
