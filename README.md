@@ -185,9 +185,9 @@ symbol types
 
 The blue and pink boxes show `rect` and `polygon`, respectively, for barcodes in
 `pyzbar/tests/qrcode.png`
-(see [./bounding_box_and_polygon.py](bounding_box_and_polygon.py)).
+(see [bounding_box_and_polygon.py](https://github.com/NaturalHistoryMuseum/pyzbar/blob/master/bounding_box_and_polygon.py)).
 
-![Two barcodes with bounding boxes and polygons](./bounding_box_and_polygon.png)
+![Two barcodes with bounding boxes and polygons](https://github.com/NaturalHistoryMuseum/pyzbar/raw/master/bounding_box_and_polygon.png)
 
 ## Windows error message
 If you see an ugly `ImportError` when importing `pyzbar` on Windows you will
