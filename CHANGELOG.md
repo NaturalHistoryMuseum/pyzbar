@@ -1,6 +1,10 @@
+### v0.1.8
+
+* #31 README badges no longer displaying on PyPI
+
 ### v0.1.7
 
-Fix display of images in README
+* Fix display of images in README
 
 ### v0.1.6
 

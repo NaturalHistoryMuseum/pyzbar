@@ -14,7 +14,6 @@ URL = 'https://github.com/NaturalHistoryMuseum/pyzbar/'
 
 def readme():
     try:
-        # README.rst is generated from README.md (see DEVELOPING.md)
         with open('README.rst') as f:
             return f.read()
     except:
@@ -30,6 +29,7 @@ setup_data = {
     'license': 'MIT',
     'description': pyzbar.__doc__,
     'long_description': readme(),
+    'long_description_content_type': 'text/x-rst',
     'packages': ['pyzbar', 'pyzbar.scripts', 'pyzbar.tests'],
     'test_suite': 'pyzbar.tests',
     'scripts': ['pyzbar/scripts/{0}.py'.format(script) for script in SCRIPTS],
