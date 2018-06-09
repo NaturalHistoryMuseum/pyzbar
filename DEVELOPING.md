@@ -41,18 +41,13 @@ frozen binary.
 
 ```
 pip install wheel
-brew install pandoc
 ```
 
 2. Build
-    Generate the `reStructuredText README.rst` from `README.md` and create
-    source and wheel builds. The `win32` and `win_amd64` wheels will
+    Create source and wheel builds. The `win32` and `win_amd64` wheels will
     contain the appropriate `zbar.dll` and its dependencies.
 
-    Including just the DLLs we want is pain...
-
     ```
-    pandoc --from=markdown --to=rst README.md -o README.rst
     rm -rf build dist MANIFEST.in pyzbar.egg-info
     cp MANIFEST.in.all MANIFEST.in
     ./setup.py bdist_wheel

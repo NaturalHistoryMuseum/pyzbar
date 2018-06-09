@@ -14,7 +14,6 @@ URL = 'https://github.com/NaturalHistoryMuseum/pyzbar/'
 
 def readme():
     try:
-        # README.rst is generated from README.md (see DEVELOPING.md)
         with open('README.rst') as f:
             return f.read()
     except:
