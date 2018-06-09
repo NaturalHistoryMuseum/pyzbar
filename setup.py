@@ -29,6 +29,7 @@ setup_data = {
     'license': 'MIT',
     'description': pyzbar.__doc__,
     'long_description': readme(),
+    'long_description_content_type': 'text/x-rst',
     'packages': ['pyzbar', 'pyzbar.scripts', 'pyzbar.tests'],
     'test_suite': 'pyzbar.tests',
     'scripts': ['pyzbar/scripts/{0}.py'.format(script) for script in SCRIPTS],
