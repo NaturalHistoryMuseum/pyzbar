@@ -63,7 +63,7 @@ pip install wheel
     rm -rf build MANIFEST.in pyzbar.egg-info
     ```
 
-3. Release to pypitest (see https://wiki.python.org/moin/TestPyPI for details)
+3. Release to TestPyPI (see https://packaging.python.org/guides/using-testpypi/)
 
     ```
     mkvirtualenv pypi
@@ -71,7 +71,7 @@ pip install wheel
     twine upload -r pypitest dist/*
     ```
 
-4. Test the release to pypitest
+4. Test the release to TestPyPI
 
     * Check https://test.pypi.org/project/pyzbar/
 
