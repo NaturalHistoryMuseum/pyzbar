@@ -106,11 +106,21 @@ def _decode_symbols(symbols):
             for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
         )
 
+        # since 'polygon' is very misleading if one wants to detect the QR/bar
+        # code position in order no matter how they appear in the scene
+        polygon_upright = list(map(Point._make,(
+            (
+                zbar_symbol_get_loc_x(symbol, index),
+                zbar_symbol_get_loc_y(symbol, index)
+            )
+            for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
+        )))
+
         yield Decoded(
             data=data,
             type=symbol_type,
             rect=bounding_box(polygon),
-            polygon=polygon
+            polygon=polygon_upright
         )
 
 
