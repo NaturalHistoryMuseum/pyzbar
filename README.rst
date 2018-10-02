@@ -46,6 +46,12 @@ Linux:
 
    sudo apt-get install libzbar0
 
+Environment variable:
+
+::
+
+    export ZBAR_PATH=/path/to/libzbar.so
+
 Install this Python wrapper; use the second form to install dependencies of the
 command-line scripts:
 
