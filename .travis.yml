@@ -4,11 +4,15 @@ language:
 sudo:
   - required
 
+dist:
+  - xenial
+
 python:
   - "2.7"
   - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
 
 before_install:
   - sudo apt-get -qq update
@@ -22,4 +26,3 @@ script:
 
 after_success:
   - coveralls
-

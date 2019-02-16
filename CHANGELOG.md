@@ -1,5 +1,6 @@
 ### v0.1.8
 
+* #47 Python 3.7
 * #31 README badges no longer displaying on PyPI
 
 ### v0.1.7
