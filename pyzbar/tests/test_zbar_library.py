@@ -1,8 +1,5 @@
-import platform
-import sys
 import unittest
 
-from contextlib import contextmanager
 from pathlib import Path
 
 try:

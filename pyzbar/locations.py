@@ -3,7 +3,7 @@ from itertools import chain
 from operator import itemgetter
 
 
-__all__ = ['bounding_box', 'convex_hull', 'Rect']
+__all__ = ['bounding_box', 'convex_hull', 'Point', 'Rect']
 
 
 Point = namedtuple('Point', ['x', 'y'])
@@ -23,14 +23,14 @@ def bounding_box(locations):
     x_min, x_max = min(x_values), max(x_values)
     y_values = list(map(itemgetter(1), locations))
     y_min, y_max = min(y_values), max(y_values)
-    return Rect(x_min, y_min, x_max - x_min,  y_max - y_min)
+    return Rect(x_min, y_min, x_max - x_min, y_max - y_min)
 
 
 def convex_hull(points):
     """Computes the convex hull of an iterable of (x, y) coordinates.
 
     Args:
-        locations: iterable of (x, y) tuples.
+        points: iterable of (x, y) tuples.
 
     Returns:
         `list`: instances of `Point` - vertices of the convex hull in
@@ -47,9 +47,9 @@ def convex_hull(points):
             (p1[1] - p0[1]) * (p2[0] - p0[0])
         )
 
-    def go(points):
+    def go(points_):
         res = []
-        for p in points:
+        for p in points_:
             while 1 < len(res) and is_not_clockwise(res[-2], res[-1], p):
                 res.pop()
             res.append(p)

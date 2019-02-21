@@ -1,15 +1,10 @@
 """Low-level wrapper around zbar's interface
 """
-import platform
-import sys
-
 from ctypes import (
-    cdll, c_ubyte, c_char_p, c_int, c_uint, c_ulong, c_void_p, Structure,
+    c_ubyte, c_char_p, c_int, c_uint, c_ulong, c_void_p, Structure,
     CFUNCTYPE, POINTER
 )
-from ctypes.util import find_library
 from enum import IntEnum, unique
-from pathlib import Path
 
 from . import zbar_library
 
