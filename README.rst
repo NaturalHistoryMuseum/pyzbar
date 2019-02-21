@@ -1,7 +1,7 @@
 pyzbar
 ======
 
-.. image:: https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5%2C%203.6-blue.svg
+.. image:: https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5%2C%203.6%2C%203.7-blue.svg
     :target: https://github.com/NaturalHistoryMuseum/pyzbar
 
 .. image:: https://badge.fury.io/py/pyzbar.svg
