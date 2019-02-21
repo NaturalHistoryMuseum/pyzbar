@@ -4,9 +4,10 @@ import unittest
 from pathlib import Path
 from contextlib import contextmanager
 
-if 2 == sys.version_info[0]:
+# TODO Would io.StringIO not work in all cases?
+try:
     from cStringIO import StringIO
-else:
+except ImportError:
     from io import StringIO
 
 from pyzbar.scripts.read_zbar import main

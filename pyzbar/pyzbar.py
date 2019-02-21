@@ -14,7 +14,9 @@ from .wrapper import (
     zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 
-__all__ = ['decode', 'Point', 'Rect', 'Decoded', 'EXTERNAL_DEPENDENCIES']
+__all__ = [
+    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'EXTERNAL_DEPENDENCIES'
+]
 
 
 Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon'])
@@ -146,7 +148,8 @@ def _pixel_data(image):
 
         # Check dimensions
         if 0 != len(pixels) % (width * height):
-            raise PyZbarError((
+            raise PyZbarError(
+                (
                     'Inconsistent dimensions: image data of {0} bytes is not '
                     'divisible by (width x height = {1})'
                 ).format(len(pixels), (width * height))
@@ -164,15 +167,13 @@ def _pixel_data(image):
     return pixels, width, height
 
 
-def decode(image, symbols=None, scan_locations=False):
+def decode(image, symbols=None):
     """Decodes datamatrix barcodes in `image`.
 
     Args:
         image: `numpy.ndarray`, `PIL.Image` or tuple (pixels, width, height)
-        symbols (ZBarSymbol): the symbol types to decode; if `None`, uses
+        symbols: iter(ZBarSymbol) the symbol types to decode; if `None`, uses
             `zbar`'s default behaviour, which is to decode all symbol types.
-        scan_locations (bool): If `True`, results will include scan
-            locations.
 
     Returns:
         :obj:`list` of :obj:`Decoded`: The values decoded from barcodes.

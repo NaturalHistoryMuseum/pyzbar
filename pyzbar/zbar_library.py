@@ -45,13 +45,13 @@ def load():
         #       cdll.LoadLibrary() imports DLLs alongside executable
         fname, dependencies = _windows_fnames()
 
-        def load_objects(dir):
+        def load_objects(directory):
             # Load dependencies before loading libzbar dll
             deps = [
-                cdll.LoadLibrary(str(dir.joinpath(dep)))
+                cdll.LoadLibrary(str(directory.joinpath(dep)))
                 for dep in dependencies
             ]
-            libzbar = cdll.LoadLibrary(str(dir.joinpath(fname)))
+            libzbar = cdll.LoadLibrary(str(directory.joinpath(fname)))
             return deps, libzbar
 
         try:

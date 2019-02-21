@@ -4,10 +4,10 @@ import unittest
 from pathlib import Path
 
 try:
-    from unittest.mock import call, patch, MagicMock
+    from unittest.mock import patch
 except ImportError:
     # Python 2
-    from mock import call, patch
+    from mock import patch
 
 import numpy as np
 
@@ -17,7 +17,6 @@ try:
     import cv2
 except ImportError:
     cv2 = None
-
 
 from pyzbar.pyzbar import (
     decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
@@ -172,7 +171,7 @@ class TestDecode(unittest.TestCase):
         data = (list(range(3 * 3 * 2)), 3, 3)
         self.assertRaisesRegexp(
             PyZbarError,
-            'Unsupported bits-per-pixel \[16\]. Only \[8\] is supported.',
+            r'Unsupported bits-per-pixel \[16\]. Only \[8\] is supported.',
             decode, data
         )
         self.assertRaises(PyZbarError, decode, data)
@@ -183,8 +182,8 @@ class TestDecode(unittest.TestCase):
         self.assertRaisesRegexp(
             PyZbarError,
             (
-                'Inconsistent dimensions: image data of 10 bytes is not '
-                'divisible by \(width x height = 9\)'
+                r'Inconsistent dimensions: image data of 10 bytes is not '
+                r'divisible by \(width x height = 9\)'
             ),
             decode, data
         )

@@ -13,6 +13,7 @@ URL = 'https://github.com/NaturalHistoryMuseum/pyzbar/'
 
 
 def readme():
+    # TODO IOError on Python 2.x. FileNotFoundError on Python 3.x.
     try:
         with open('README.rst') as f:
             return f.read()

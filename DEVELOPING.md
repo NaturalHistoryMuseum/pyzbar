@@ -68,7 +68,7 @@ pip install wheel
     ```
     mkvirtualenv pypi
     pip install twine
-    twine upload -r pypitest dist/*
+    twine upload -r testpypi dist/*
     ```
 
 4. Test the release to TestPyPI
