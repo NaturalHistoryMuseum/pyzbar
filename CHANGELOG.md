@@ -1,3 +1,7 @@
+### v0.1.9
+
+* #40 Location of zbar shared library from environment variable
+
 ### v0.1.8
 
 * #47 Python 3.7
