@@ -1,3 +1,7 @@
+### v0.1.9
+
+* #46 Include quality
+
 ### v0.1.8
 
 * #47 Python 3.7
