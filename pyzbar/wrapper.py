@@ -16,7 +16,8 @@ __all__ = [
     'zbar_image_scanner_set_config', 'zbar_image_set_data',
     'zbar_image_set_format', 'zbar_image_set_size', 'zbar_scan_image',
     'zbar_symbol_get_data', 'zbar_symbol_get_loc_size',
-    'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y', 'zbar_symbol_next'
+    'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y',
+    'zbar_symbol_get_quality', 'zbar_symbol_next',
 ]
 
 # Globals populated in load_libzbar
@@ -262,5 +263,11 @@ zbar_symbol_get_loc_y = zbar_function(
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
     POINTER(zbar_symbol),
+    POINTER(zbar_symbol)
+)
+
+zbar_symbol_get_quality = zbar_function(
+    'zbar_symbol_get_quality',
+    c_int,
     POINTER(zbar_symbol)
 )
