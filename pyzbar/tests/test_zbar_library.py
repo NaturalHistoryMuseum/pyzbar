@@ -23,6 +23,9 @@ class TestLoad(unittest.TestCase):
         self.platform = patch(
             'pyzbar.zbar_library.platform', autospec=True
         ).start()
+        self.os = patch(
+            'pyzbar.zbar_library.os', autospec=True
+        ).start()
         self.windows_fnames = patch(
             'pyzbar.zbar_library._windows_fnames', autospec=True,
             return_value=('dll fname', ['dependency fname'])
@@ -36,8 +39,26 @@ class TestLoad(unittest.TestCase):
 
         self.platform.system.assert_called_once_with()
         self.find_library.assert_called_once_with('zbar')
+        self.assertEqual(0, self.os.getenv.call_count)
         self.cdll.LoadLibrary.assert_called_once_with(
             self.find_library.return_value
+        )
+
+        self.assertEqual((self.cdll.LoadLibrary.return_value, []), res)
+        self.assertEqual(0, self.windows_fnames.call_count)
+
+    def test_environment_variable_non_windows(self):
+        "zbar found using environment variable on non-Windows platform"
+        self.platform.system.return_value = 'Not windows'
+        self.find_library.return_value = None
+
+        res = zbar_library.load()
+
+        self.platform.system.assert_called_once_with()
+        self.find_library.assert_called_once_with('zbar')
+        self.os.getenv.assert_called_once_with('ZBAR_PATH')
+        self.cdll.LoadLibrary.assert_called_once_with(
+            self.os.getenv.return_value
         )
 
         self.assertEqual((self.cdll.LoadLibrary.return_value, []), res)
@@ -47,11 +68,13 @@ class TestLoad(unittest.TestCase):
         "zbar not found on non-Windows platform"
         self.platform.system.return_value = 'Not windows'
         self.find_library.return_value = None
+        self.os.getenv.return_value = None
 
         self.assertRaises(ImportError, zbar_library.load)
 
         self.platform.system.assert_called_once_with()
         self.find_library.assert_called_once_with('zbar')
+        self.os.getenv.assert_called_once_with('ZBAR_PATH')
 
     def test_found_windows(self):
         "zbar found on Windows"
