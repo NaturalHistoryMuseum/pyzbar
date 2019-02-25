@@ -46,11 +46,6 @@ Linux:
 
    sudo apt-get install libzbar0
 
-Environment variable:
-
-::
-
-    export ZBAR_PATH=/path/to/libzbar.so
 
 Install this Python wrapper; use the second form to install dependencies of the
 command-line scripts:
@@ -218,10 +213,22 @@ Studio 2013
 Install ``vcredist_x64.exe`` if using 64-bit Python, ``vcredist_x86.exe`` if
 using 32-bit Python.
 
+Path to zbar library
+--------------------
+
+Users of AWS and Heroku have reported that `pyzbar` is unable to find the `zbar`
+library on these platforms. Starting with 0.1.9, if `pyzbar` is unable to find
+the `libzbar` shared object using the usual mechanism it attempts to load it
+from the path given in the `ZBAR_PATH` environment variable.
+If you experience this problem set the `ZBAR_PATH` environment variable e.g.,
+`ZBAR_PATH=/path/to/zbar.so`.
+
 Contributors
 ------------
 
--  Alex (@globophobe) - first implementation of barcode locations
+- Alex (@globophobe) - first implementation of barcode locations
+- Carlos Mendes (@cmendesce) - first implementation of `ZBAR_PATH` environment
+  variable support
 
 License
 -------
