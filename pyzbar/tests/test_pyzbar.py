@@ -19,7 +19,7 @@ except ImportError:
     cv2 = None
 
 from pyzbar.pyzbar import (
-    decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    decode, Decoded, Rect, ZBarSymbol, ZBarConfig, EXTERNAL_DEPENDENCIES
 )
 from pyzbar.pyzbar_error import PyZbarError
 
@@ -66,11 +66,19 @@ class TestDecode(unittest.TestCase):
             polygon=[(32, 352), (177, 366), (190, 222), (46, 208)])
     ]
 
+    EXPECTED_CODEI25 = [
+        Decoded(
+            data=b'75',
+            type='I25',
+            rect=Rect(left=1, top=0, width=52, height=56),
+            polygon=[(1, 1), (1, 55), (53, 56), (53, 0)])
+    ]
+
     def setUp(self):
-        self.code128, self.qrcode, self.qrcode_rotated, self.empty = (
+        self.code128, self.qrcode, self.qrcode_rotated, self.empty, self.codei25 = (
             Image.open(str(TESTDATA.joinpath(fname)))
             for fname in
-            ('code128.png', 'qrcode.png', 'qrcode_rotated.png', 'empty.png')
+            ('code128.png', 'qrcode.png', 'qrcode_rotated.png', 'empty.png', 'short_codeI25.png')
         )
         self.maxDiff = None
 
@@ -92,6 +100,13 @@ class TestDecode(unittest.TestCase):
         # Test computation of the polygon around the barcode
         res = decode(self.qrcode_rotated)
         self.assertEqual(self.EXPECTED_QRCODE_ROTATED, res)
+
+    def test_config(self):
+        "Read a 2-digit I25 barcode (ZBar defaults to min 6 digits for I25)"
+        config = {}
+        config[ZBarSymbol.I25] = {ZBarConfig.CFG_MIN_LEN: 2}
+        res = decode(self.codei25, config=config)
+        self.assertEqual(self.EXPECTED_CODEI25, res)
 
     def test_symbols(self):
         "Read only qrcodes in `qrcode.png`"

@@ -192,6 +192,30 @@ symbol types
    >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
    []
 
+To change any of the other ZBar default settings found in `pyzbar.wrapper.ZBarConfig
+<https://github.com/NaturalHistoryMuseum/pyzbar/blob/master/pyzbar/wrapper.py>`__ just pass
+a config object to the ``decode`` method
+
+::
+
+    >>> from pyzbar.pyzbar import ZBarSymbol
+    >>> from pyzbar.pyzbar import ZBarConfig
+    >>> # Build config object
+    >>> config = {}
+    >>> config[ZBarSymbol.I25] = {ZBarConfig.CFG_MIN_LEN: 2}  # change min code length for I25 codes to 2 digits, ZBar defaults to 6
+    >>> decode(Image.open('pyzbar/tests/short_codeI25.png'), config=config)
+    [
+        Decoded(
+            data=b'75',
+            type='I25',
+            rect=Rect(left=1, top=0, width=52, height=56),
+            polygon=[
+                Point(x=1, y=1), Point(x=1, y=55), Point(x=53, y=56),
+                Point(x=53, y=0)
+            ]
+        )
+    ]
+
 Bounding boxes and polygons
 ---------------------------
 

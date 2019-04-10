@@ -167,13 +167,15 @@ def _pixel_data(image):
     return pixels, width, height
 
 
-def decode(image, symbols=None):
+def decode(image, symbols=None, config=None):
     """Decodes datamatrix barcodes in `image`.
 
     Args:
         image: `numpy.ndarray`, `PIL.Image` or tuple (pixels, width, height)
         symbols: iter(ZBarSymbol) the symbol types to decode; if `None`, uses
             `zbar`'s default behaviour, which is to decode all symbol types.
+        config: dict(ZBarSymbol: dict(ZBarConfig: value)) per-symbol config
+            options to change default ZBar settings
 
     Returns:
         :obj:`list` of :obj:`Decoded`: The values decoded from barcodes.
@@ -197,6 +199,15 @@ def decode(image, symbols=None):
                 zbar_image_scanner_set_config(
                     scanner, symbol, ZBarConfig.CFG_ENABLE, 1
                 )
+
+        # Set per-symbol config options for the scanner
+        if config:
+            for symbol, options in config.items():
+                for option, value in options.items():
+                    zbar_image_scanner_set_config(
+                        scanner, symbol, option, value
+                    )
+
         with _image() as img:
             zbar_image_set_format(img, _FOURCC['L800'])
             zbar_image_set_size(img, width, height)
