@@ -21,7 +21,7 @@ except ImportError:
 try:
     import imageio
 except ImportError:
-    iamgeio = None
+    imageio = None
 
 from pyzbar.pyzbar import (
     decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
