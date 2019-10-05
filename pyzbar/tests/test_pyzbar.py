@@ -18,6 +18,11 @@ try:
 except ImportError:
     cv2 = None
 
+try:
+    import imageio
+except ImportError:
+    iamgeio = None
+
 from pyzbar.pyzbar import (
     decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
@@ -123,6 +128,12 @@ class TestDecode(unittest.TestCase):
     def test_decode_numpy(self):
         "Read image using Pillow and convert to numpy.ndarray"
         res = decode(np.asarray(self.code128))
+        self.assertEqual(self.EXPECTED_CODE128, res)
+
+    @unittest.skipIf(imageio is None, 'imageio not installed')
+    def test_decode_imageio(self):
+        "Read image using imageio"
+        res = decode(imageio.imread(str(TESTDATA.joinpath('code128.png'))))
         self.assertEqual(self.EXPECTED_CODE128, res)
 
     @unittest.skipIf(cv2 is None, 'OpenCV not installed')
