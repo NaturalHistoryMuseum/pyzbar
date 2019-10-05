@@ -16,7 +16,6 @@ python:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libzbar0 python-opencv
-  - sudo pip install imageio
 
 install:
   - pip install tox-travis coveralls
