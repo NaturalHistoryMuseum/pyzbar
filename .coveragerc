@@ -1,5 +1,7 @@
 [run]
-omit = */site-packages/*
+omit =
+    */site-packages/*
+    README.rst
 
 [report]
 # Regexes for lines to exclude from consideration
