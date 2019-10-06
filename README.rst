@@ -46,6 +46,13 @@ Linux:
 
    sudo apt-get install libzbar0
 
+Using conda, the ``zbar`` binaries are available for Linux systems through the conda-forge channel:
+
+::
+
+   conda install --channel conda-forge zbar
+
+
 Install this Python wrapper; use the second form to install dependencies of the
 command-line scripts:
 
