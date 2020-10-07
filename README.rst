@@ -71,7 +71,8 @@ The ``decode`` function accepts instances of ``PIL.Image``.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -79,7 +80,8 @@ The ``decode`` function accepts instances of ``PIL.Image``.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
    ]
 
@@ -97,7 +99,8 @@ images using `OpenCV <http://opencv.org/>`__.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -105,7 +108,8 @@ images using `OpenCV <http://opencv.org/>`__.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
    ]
 
@@ -126,7 +130,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -134,7 +139,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
    ]
 
@@ -148,7 +154,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -156,7 +163,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
    ]
 
@@ -183,7 +191,8 @@ symbol types
            polygon=[
                Point(x=27, y=27), Point(x=27, y=172), Point(x=172, y=172),
                Point(x=172, y=27)
-           ]
+           ],
+           orientation=<ZBarOrientation.UP: 0>
        )
    ]
 
