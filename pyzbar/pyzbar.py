@@ -9,17 +9,18 @@ from .wrapper import (
     zbar_image_scanner_create, zbar_image_scanner_destroy,
     zbar_image_create, zbar_image_destroy, zbar_image_set_format,
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
-    zbar_image_first_symbol, zbar_symbol_get_data,
+    zbar_image_first_symbol, zbar_symbol_get_data, zbar_symbol_get_orientation,
     zbar_symbol_get_loc_size, zbar_symbol_get_loc_x, zbar_symbol_get_loc_y,
-    zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    zbar_symbol_next, ZBarConfig, ZBarSymbol, ZBarOrientation, EXTERNAL_DEPENDENCIES
 )
 
 __all__ = [
-    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'EXTERNAL_DEPENDENCIES'
+    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'ZBarOrientation',
+    'EXTERNAL_DEPENDENCIES'
 ]
 
 
-Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon'])
+Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon', 'orientation'])
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 _FOURCC = {
@@ -107,12 +108,13 @@ def _decode_symbols(symbols):
             )
             for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
         )
-
+        orientation = ZBarOrientation(zbar_symbol_get_orientation(symbol))
         yield Decoded(
             data=data,
             type=symbol_type,
             rect=bounding_box(polygon),
-            polygon=polygon
+            polygon=polygon,
+            orientation=orientation,
         )
 
 
