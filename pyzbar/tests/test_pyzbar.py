@@ -19,7 +19,7 @@ except ImportError:
     cv2 = None
 
 from pyzbar.pyzbar import (
-    decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    decode, Decoded, Rect, ZBarSymbol, ZBarOrientation, EXTERNAL_DEPENDENCIES
 )
 from pyzbar.pyzbar_error import PyZbarError
 
@@ -33,13 +33,15 @@ class TestDecode(unittest.TestCase):
             data=b'Foramenifera',
             type='CODE128',
             rect=Rect(left=37, top=550, width=324, height=76),
-            polygon=[(37, 551), (37, 625), (361, 626), (361, 550)]
+            polygon=[(37, 551), (37, 625), (361, 626), (361, 550)],
+            orientation=ZBarOrientation.UP
         ),
         Decoded(
             data=b'Rana temporaria',
             type='CODE128',
             rect=Rect(left=4, top=0, width=390, height=76),
-            polygon=[(4, 1), (4, 75), (394, 76), (394, 0)]
+            polygon=[(4, 1), (4, 75), (394, 76), (394, 0)],
+            orientation=ZBarOrientation.UP
         )
     ]
 
@@ -48,7 +50,8 @@ class TestDecode(unittest.TestCase):
             b'Thalassiodracon',
             type='QRCODE',
             rect=Rect(left=27, top=27, width=145, height=145),
-            polygon=[(27, 27), (27, 172), (172, 172), (172, 27)]
+            polygon=[(27, 27), (27, 172), (172, 172), (172, 27)],
+            orientation=ZBarOrientation.UP
         )
     ]
 
@@ -58,12 +61,16 @@ class TestDecode(unittest.TestCase):
             data=b'Thalassiodracon',
             type='QRCODE',
             rect=Rect(left=173, top=10, width=205, height=205),
-            polygon=[(173, 113), (276, 215), (378, 113), (276, 10)]),
+            polygon=[(173, 113), (276, 215), (378, 113), (276, 10)],
+            orientation=ZBarOrientation.UP
+        ),
         Decoded(
             data=b'Thalassiodracon',
             type='QRCODE',
             rect=Rect(left=32, top=208, width=158, height=158),
-            polygon=[(32, 352), (177, 366), (190, 222), (46, 208)])
+            polygon=[(32, 352), (177, 366), (190, 222), (46, 208)],
+            orientation=ZBarOrientation.RIGHT
+        )
     ]
 
     def setUp(self):
