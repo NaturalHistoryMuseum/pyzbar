@@ -31,6 +31,11 @@ Installation
 ------------
 
 The ``zbar`` ``DLL``\ s are included with the Windows Python wheels.
+One of them also depends on ``MSVCR120.dll``, a DLL included in Microsoft Visual
+C++ Redistributable Package, which is quite common and usually installed
+already. Otherwise, it shows ``FileNotFoundError: Could not find module
+'...\libzbar-64.dll' (or one of its dependencies).``
+
 On other operating systems, you will need to install the ``zbar`` shared
 library.
 
