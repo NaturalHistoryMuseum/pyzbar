@@ -74,6 +74,10 @@ class TestDecode(unittest.TestCase):
         )
         self.maxDiff = None
 
+        # assertRaisesRegexp was a deprecated alias removed in Python 3.11
+        if not hasattr(self, 'assertRaisesRegex'):
+            self.assertRaisesRegex = self.assertRaisesRegexp
+
     def tearDown(self):
         self.code128 = self.empty = self.qrcode = None
 
@@ -145,7 +149,7 @@ class TestDecode(unittest.TestCase):
     @patch('pyzbar.pyzbar.zbar_image_create')
     def test_zbar_image_create_fail(self, zbar_image_create):
         zbar_image_create.return_value = None
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
             PyZbarError, 'Could not create zbar image', decode, self.code128
         )
         zbar_image_create.assert_called_once_with()
@@ -153,7 +157,7 @@ class TestDecode(unittest.TestCase):
     @patch('pyzbar.pyzbar.zbar_image_scanner_create')
     def test_zbar_image_scanner_create_fail(self, zbar_image_scanner_create):
         zbar_image_scanner_create.return_value = None
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
             PyZbarError, 'Could not create image scanner', decode, self.code128
         )
         zbar_image_scanner_create.assert_called_once_with()
@@ -161,7 +165,7 @@ class TestDecode(unittest.TestCase):
     @patch('pyzbar.pyzbar.zbar_scan_image')
     def test_zbar_scan_image_fail(self, zbar_scan_image):
         zbar_scan_image.return_value = -1
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
             PyZbarError, 'Unsupported image format', decode, self.code128
         )
         self.assertEqual(1, zbar_scan_image.call_count)
@@ -169,7 +173,7 @@ class TestDecode(unittest.TestCase):
     def test_unsupported_bits_per_pixel(self):
         # 16 bits-per-pixel
         data = (list(range(3 * 3 * 2)), 3, 3)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
             PyZbarError,
             r'Unsupported bits-per-pixel \[16\]. Only \[8\] is supported.',
             decode, data
@@ -179,7 +183,7 @@ class TestDecode(unittest.TestCase):
     def test_inconsistent_dimensions(self):
         # Ten bytes but width x height indicates nine bytes
         data = (list(range(10)), 3, 3)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
             PyZbarError,
             (
                 r'Inconsistent dimensions: image data of 10 bytes is not '
