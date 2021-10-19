@@ -1,3 +1,7 @@
+### v0.1.9
+
+* #86 Read barcodes containing null characters
+
 ### v0.1.8
 
 * #47 Python 3.7

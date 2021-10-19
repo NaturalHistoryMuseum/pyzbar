@@ -216,6 +216,7 @@ Contributors
 ------------
 
 -  Alex (@globophobe) - first implementation of barcode locations
+-  @jaant - read barcodes containing null characters
 
 License
 -------
