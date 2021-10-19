@@ -133,15 +133,18 @@ def _pixel_data(image):
     Returns:
         :obj: `tuple` (pixels, width, height)
     """
-    # Test for PIL.Image and numpy.ndarray without requiring that cv2 or PIL
-    # are installed.
+    # Test for PIL.Image, numpy.ndarray, and imageio.core.util without
+    # requiring that cv2, PIL, or imageio are installed.
+
     image_type = str(type(image))
     if 'PIL.' in image_type:
         if 'L' != image.mode:
             image = image.convert('L')
         pixels = image.tobytes()
         width, height = image.size
-    elif 'numpy.ndarray' in image_type or 'imageio.core.util.Array' in image_type:
+    elif 'numpy.ndarray' in image_type or 'imageio.core.util' in image_type:
+        # Different versions of imageio use a subclass of numpy.ndarray
+        # called wither imageio.core.util.Image or imageio.core.util.Array.
         if 3 == len(image.shape):
             # Take just the first channel
             image = image[:, :, 0]
