@@ -1,6 +1,6 @@
-### v0.1.8
+### v0.1.9
 
-* #?? Python 3.8., 3.9 and 3.10; drop support for Python 3.4
+* #108 Python 3.8., 3.9 and 3.10; drop support for Python 3.4
 
 ### v0.1.8
 
