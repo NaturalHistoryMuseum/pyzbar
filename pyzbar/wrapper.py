@@ -57,6 +57,7 @@ class ZBarSymbol(IntEnum):
     CODE39 = 39       # /**< Code 39. @since 0.4 */
     PDF417 = 57       # /**< PDF417. @since 0.6 */
     QRCODE = 64       # /**< QR Code. @since 0.10 */
+    SQCODE = 80       # /**< SQ Code. @since 0.20.1 */
     CODE93 = 93       # /**< Code 93. @since 0.11 */
     CODE128 = 128     # /**< Code 128 */
 
