@@ -35,15 +35,15 @@ class TestDecode(unittest.TestCase):
             type='CODE128',
             rect=Rect(left=37, top=550, width=324, height=76),
             polygon=[(37, 551), (37, 625), (361, 626), (361, 550)],
-            quality=77
+            quality=77,
         ),
         Decoded(
             data=b'Rana temporaria',
             type='CODE128',
             rect=Rect(left=4, top=0, width=390, height=76),
             polygon=[(4, 1), (4, 75), (394, 76), (394, 0)],
-            quality=77
-        )
+            quality=77,
+        ),
     ]
 
     EXPECTED_QRCODE = [
@@ -52,8 +52,8 @@ class TestDecode(unittest.TestCase):
             type='QRCODE',
             rect=Rect(left=27, top=27, width=145, height=145),
             polygon=[(27, 27), (27, 172), (172, 172), (172, 27)],
-            quality=1
-        )
+            quality=1,
+        ),
     ]
 
     # Two barcodes, both with same content
@@ -63,13 +63,15 @@ class TestDecode(unittest.TestCase):
             type='QRCODE',
             rect=Rect(left=173, top=10, width=205, height=205),
             polygon=[(173, 113), (276, 215), (378, 113), (276, 10)],
-            quality=1),
+            quality=1,
+        ),
         Decoded(
             data=b'Thalassiodracon',
             type='QRCODE',
             rect=Rect(left=32, top=208, width=158, height=158),
             polygon=[(32, 352), (177, 366), (190, 222), (46, 208)],
-            quality=1)
+            quality=1,
+        ),
     ]
 
     def setUp(self):
