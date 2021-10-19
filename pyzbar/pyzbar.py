@@ -124,12 +124,13 @@ def _pixel_data(image):
     """
     # Test for PIL.Image and numpy.ndarray without requiring that cv2 or PIL
     # are installed.
-    if 'PIL.' in str(type(image)):
+    image_type = str(type(image))
+    if 'PIL.' in image_type:
         if 'L' != image.mode:
             image = image.convert('L')
         pixels = image.tobytes()
         width, height = image.size
-    elif 'numpy.ndarray' in str(type(image)):
+    elif 'numpy.ndarray' in image_type or 'imageio.core.util.Array' in image_type:
         if 3 == len(image.shape):
             # Take just the first channel
             image = image[:, :, 0]
