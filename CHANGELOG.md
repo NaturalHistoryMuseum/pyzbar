@@ -1,3 +1,7 @@
+### v0.1.9
+
+* #113 Add support for images loaded using imageio
+
 ### v0.1.8
 
 * #47 Python 3.7

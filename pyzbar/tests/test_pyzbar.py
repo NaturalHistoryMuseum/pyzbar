@@ -137,7 +137,7 @@ class TestDecode(unittest.TestCase):
     @unittest.skipIf(imageio is None, 'imageio not installed')
     def test_decode_imageio(self):
         "Read image using imageio"
-        res = decode(imageio.imread(str(TESTDATA.joinpath('code128.png'))))
+        res = decode(imageio.imread(TESTDATA.joinpath('code128.png')))
         self.assertEqual(self.EXPECTED_CODE128, res)
 
     @unittest.skipIf(cv2 is None, 'OpenCV not installed')
