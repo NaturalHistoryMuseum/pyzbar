@@ -1,3 +1,7 @@
+### v0.1.9
+
+* #84 Barcode orientation
+
 ### v0.1.8
 
 * #47 Python 3.7
@@ -30,7 +34,7 @@
 
 ### v0.1.1
 
-* #3 Error when decoding ndarray on an image with a single channel
+* #3 Error whenecoding ndarray on an image with a single channel
 
 ### v0.1.0
 

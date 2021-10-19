@@ -225,6 +225,7 @@ Contributors
 ------------
 
 -  Alex (@globophobe) - first implementation of barcode locations
+-  Dmytro Ferens (@dferens) - barcode orientation
 
 License
 -------
