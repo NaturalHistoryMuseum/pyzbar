@@ -2,6 +2,7 @@
 
 * #47 Python 3.7
 * #31 README badges no longer displaying on PyPI
+* #107 Support SQ Codes
 
 ### v0.1.7
 
