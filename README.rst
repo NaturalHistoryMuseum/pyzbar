@@ -154,7 +154,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           quality=77
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -162,7 +163,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           quality=77
        )
    ]
 
