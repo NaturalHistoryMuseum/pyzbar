@@ -98,8 +98,16 @@ def _decode_symbols(symbols):
     """
     for symbol in symbols:
         data = string_at(zbar_symbol_get_data(symbol))
-        # The 'type' int in a value in the ZBarSymbol enumeration
-        symbol_type = ZBarSymbol(symbol.contents.type).name
+
+        # The 'type' int should be a value in the ZBarSymbol enumeration
+        try:
+            symbol_type = ZBarSymbol(symbol.contents.type)
+        except ValueError:
+            # This release of zbar supports a type that pyzbar does not know about
+            symbol_type = "Unrecognised type [{0}]".format(symbol.contents.type)
+        else:
+            symbol_type = symbol_type.name
+
         polygon = convex_hull(
             (
                 zbar_symbol_get_loc_x(symbol, index),
