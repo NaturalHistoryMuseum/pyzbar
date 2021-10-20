@@ -38,7 +38,7 @@
 
 ### v0.1.1
 
-* #3 Error whenecoding ndarray on an image with a single channel
+* #3 Error when decoding ndarray on an image with a single channel
 
 ### v0.1.0
 
