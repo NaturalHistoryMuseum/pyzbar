@@ -212,9 +212,6 @@ From
   only the ordered relationship between two values is defined and will remain
   stable in the future
 
-
-
-
 Bounding boxes and polygons
 ---------------------------
 
