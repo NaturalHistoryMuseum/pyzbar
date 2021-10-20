@@ -1,5 +1,6 @@
 ### v0.1.9
 
+* #113 Add support for images loaded using imageio
 * #108 Python 3.8., 3.9 and 3.10; drop support for Python 3.4
 * #107 Support SQ Codes; tolerate unrecognised codes
 * #46 Include quality
