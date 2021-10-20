@@ -18,6 +18,7 @@ try:
 except ImportError:
     cv2 = None
 
+from pyzbar import wrapper
 from pyzbar.pyzbar import (
     decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
@@ -135,6 +136,24 @@ class TestDecode(unittest.TestCase):
         res = decode(cv2.imread(str(TESTDATA.joinpath('code128.png'))))
         self.assertEqual(self.EXPECTED_CODE128, res)
 
+    @patch('pyzbar.pyzbar.zbar_image_first_symbol', autospec=True)
+    def test_unrecognised_symbol_type(self, zbar_image_first_symbol):
+        "The type of the first symbol is not recognised"
+        def zbar_image_first_symbol_set_symbol_type(image):
+            symbol = wrapper.zbar_image_first_symbol(image)
+            if symbol:
+                symbol.contents.type = -1
+            return symbol
+
+        zbar_image_first_symbol.side_effect = zbar_image_first_symbol_set_symbol_type
+
+        res = decode(np.asarray(self.code128))
+
+        expected = [
+            self.EXPECTED_CODE128[0]._replace(type='Unrecognised type [-1]')
+        ] + self.EXPECTED_CODE128[1:]
+        self.assertEqual(expected, res)
+
     def test_external_dependencies(self):
         "External dependencies"
         if 'Windows' == platform.system():
@@ -146,7 +165,7 @@ class TestDecode(unittest.TestCase):
             any('libzbar' in d._name for d in EXTERNAL_DEPENDENCIES)
         )
 
-    @patch('pyzbar.pyzbar.zbar_image_create')
+    @patch('pyzbar.pyzbar.zbar_image_create', autospec=True)
     def test_zbar_image_create_fail(self, zbar_image_create):
         zbar_image_create.return_value = None
         self.assertRaisesRegex(
@@ -154,7 +173,7 @@ class TestDecode(unittest.TestCase):
         )
         zbar_image_create.assert_called_once_with()
 
-    @patch('pyzbar.pyzbar.zbar_image_scanner_create')
+    @patch('pyzbar.pyzbar.zbar_image_scanner_create', autospec=True)
     def test_zbar_image_scanner_create_fail(self, zbar_image_scanner_create):
         zbar_image_scanner_create.return_value = None
         self.assertRaisesRegex(
@@ -162,7 +181,7 @@ class TestDecode(unittest.TestCase):
         )
         zbar_image_scanner_create.assert_called_once_with()
 
-    @patch('pyzbar.pyzbar.zbar_scan_image')
+    @patch('pyzbar.pyzbar.zbar_scan_image', autospec=True)
     def test_zbar_scan_image_fail(self, zbar_scan_image):
         zbar_scan_image.return_value = -1
         self.assertRaisesRegex(
