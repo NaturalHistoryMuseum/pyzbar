@@ -53,6 +53,17 @@ class TestDecode(unittest.TestCase):
         ),
     ]
 
+    EXPECTED_CODE128_NULL_CHARACTER = [
+        Decoded(
+            data=b'Hello\0Goodbye',
+            type='CODE128',
+            rect=Rect(left=4, top=0, width=390, height=75),
+            polygon=[(4, 1), (4, 75), (394, 74), (394, 0)],
+            orientation="UP",
+            quality=76,
+        ),
+    ]
+
     EXPECTED_QRCODE = [
         Decoded(
             b'Thalassiodracon',
@@ -84,25 +95,33 @@ class TestDecode(unittest.TestCase):
         ),
     ]
 
-    def setUp(self):
-        self.code128, self.qrcode, self.qrcode_rotated, self.empty = (
+    @classmethod
+    def setUpClass(cls):
+        cls.code128, cls.code128_null_character, cls.qrcode, cls.qrcode_rotated, cls.empty = (
             Image.open(str(TESTDATA.joinpath(fname)))
             for fname in
-            ('code128.png', 'qrcode.png', 'qrcode_rotated.png', 'empty.png')
+            ('code128.png', 'code128_null_character.png', 'qrcode.png', 'qrcode_rotated.png', 'empty.png')
         )
-        self.maxDiff = None
+
+        cls.maxDiff = None
 
         # assertRaisesRegexp was a deprecated alias removed in Python 3.11
-        if not hasattr(self, 'assertRaisesRegex'):
-            self.assertRaisesRegex = self.assertRaisesRegexp
+        if not hasattr(cls, 'assertRaisesRegex'):
+            cls.assertRaisesRegex = cls.assertRaisesRegexp
 
-    def tearDown(self):
-        self.code128 = self.empty = self.qrcode = None
+    @classmethod
+    def tearDownClass(cls):
+        cls.code128 = cls.code128_null_character = cls.qrcode = cls.qrcode_rotated = cls.empty = None
 
     def test_decode_code128(self):
         "Read both barcodes in `code128.png`"
         res = decode(self.code128)
         self.assertEqual(self.EXPECTED_CODE128, res)
+
+    def test_decode_code128_null_character(self):
+        "Read barcode in `code128_null_character.png` containing a null character"
+        res = decode(self.code128_null_character)
+        self.assertEqual(self.EXPECTED_CODE128_NULL_CHARACTER, res)
 
     def test_decode_qrcode(self):
         "Read barcode in `qrcode.png`"

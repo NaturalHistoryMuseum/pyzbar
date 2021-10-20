@@ -9,7 +9,8 @@ from .wrapper import (
     zbar_image_scanner_create, zbar_image_scanner_destroy,
     zbar_image_create, zbar_image_destroy, zbar_image_set_format,
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
-    zbar_image_first_symbol, zbar_symbol_get_data, zbar_symbol_get_orientation,
+    zbar_image_first_symbol, zbar_symbol_get_data_length,
+    zbar_symbol_get_data, zbar_symbol_get_orientation,
     zbar_symbol_get_loc_size, zbar_symbol_get_loc_x, zbar_symbol_get_loc_y,
     zbar_symbol_get_quality, zbar_symbol_next, ZBarConfig, ZBarOrientation,
     ZBarSymbol, EXTERNAL_DEPENDENCIES,
@@ -98,8 +99,10 @@ def _decode_symbols(symbols):
         Decoded: decoded symbol
     """
     for symbol in symbols:
-        data = string_at(zbar_symbol_get_data(symbol))
-
+        data = string_at(
+            zbar_symbol_get_data(symbol),
+            zbar_symbol_get_data_length(symbol)
+        )
         # The 'type' int should be a value in the ZBarSymbol enumeration
         try:
             symbol_type = ZBarSymbol(symbol.contents.type)

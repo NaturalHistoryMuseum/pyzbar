@@ -247,6 +247,7 @@ Contributors
 -  Alex (@globophobe) - first implementation of barcode locations
 -  Dmytro Ferens (@dferens) - barcode orientation
 -  Ismail Bento (@isman7) - support for images loaded using imageio
+-  @jaant - read barcodes containing null characters
 
 License
 -------
