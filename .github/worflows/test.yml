@@ -46,5 +46,7 @@ jobs:
           pip install -r requirements-ci.txt
 
       - name: Run tests
-        run: |
-          pytest --verbose --cov=pyzbar yzbar
+        run: pytest --verbose --cov=pyzbar yzbar
+
+      - name: Upload coverage
+        run: coveralls

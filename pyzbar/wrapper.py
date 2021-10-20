@@ -10,13 +10,15 @@ from . import zbar_library
 
 
 __all__ = [
-    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol',
+    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol', 'ZBarOrientation',
     'zbar_image_create', 'zbar_image_destroy', 'zbar_image_first_symbol',
     'zbar_image_scanner_create', 'zbar_image_scanner_destroy',
     'zbar_image_scanner_set_config', 'zbar_image_set_data',
     'zbar_image_set_format', 'zbar_image_set_size', 'zbar_scan_image',
-    'zbar_symbol_get_data', 'zbar_symbol_get_loc_size',
-    'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y', 'zbar_symbol_next'
+    'zbar_symbol_get_data_length', 'zbar_symbol_get_data',
+    'zbar_symbol_get_loc_size', 'zbar_symbol_get_loc_x',
+    'zbar_symbol_get_loc_y', 'zbar_symbol_next',
+    'zbar_symbol_get_orientation', 'zbar_symbol_get_quality',
 ]
 
 # Globals populated in load_libzbar
@@ -57,6 +59,7 @@ class ZBarSymbol(IntEnum):
     CODE39 = 39       # /**< Code 39. @since 0.4 */
     PDF417 = 57       # /**< PDF417. @since 0.6 */
     QRCODE = 64       # /**< QR Code. @since 0.10 */
+    SQCODE = 80       # /**< SQ Code. @since 0.20.1 */
     CODE93 = 93       # /**< Code 93. @since 0.11 */
     CODE128 = 128     # /**< Code 128 */
 
@@ -78,6 +81,15 @@ class ZBarConfig(IntEnum):
 
     CFG_X_DENSITY = 0x100   # /**< image scanner vertical scan density */
     CFG_Y_DENSITY = 0x101   # /**< image scanner horizontal scan density */
+
+
+@unique
+class ZBarOrientation(IntEnum):
+    UNKNOWN = -1   # /**< unable to determine orientation */
+    UP = 0         # /**< upright, read left to right */
+    RIGHT = 1      # /**< sideways, read top to bottom */
+    DOWN = 2       # /**< upside-down, read right to left */
+    LEFT = 3       # /**< sideways, read bottom to top */
 
 
 # Structs
@@ -234,7 +246,7 @@ zbar_symbol_get_data_length = zbar_function(
 
 zbar_symbol_get_data = zbar_function(
     'zbar_symbol_get_data',
-    c_char_p,
+    c_ubyte_p,
     POINTER(zbar_symbol)
 )
 
@@ -258,8 +270,20 @@ zbar_symbol_get_loc_y = zbar_function(
     c_uint
 )
 
+zbar_symbol_get_orientation = zbar_function(
+    'zbar_symbol_get_orientation',
+    c_uint,
+    POINTER(zbar_symbol)
+)
+
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
     POINTER(zbar_symbol),
+    POINTER(zbar_symbol)
+)
+
+zbar_symbol_get_quality = zbar_function(
+    'zbar_symbol_get_quality',
+    c_int,
     POINTER(zbar_symbol)
 )

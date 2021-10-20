@@ -1,0 +1,27 @@
+language: python
+
+sudo: required
+
+dist: xenial
+
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  - "3.10"
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libzbar0 python-opencv
+
+install:
+  - pip install tox-travis coveralls
+
+script:
+  - tox
+
+after_success:
+  - coveralls
