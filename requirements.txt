@@ -1,0 +1,5 @@
+# Dependencies required for development and releasing
+-r requirements-test.txt
+tox
+twine
+wheel

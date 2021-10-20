@@ -1,28 +1,21 @@
 ## Development
 
 ```
-mkvirtualenv pyzbar
+python -m venv venv
+source ./venv/bin/activate
 pip install -U pip
-pip install -r requirements.pip
+pip install -r requirements.txt
 
-nosetests
+python -m pytest --verbose --cov=pyzbar --cov-report=term-missing --cov-report=html pyzbar
 python -m pyzbar.scripts.read_zbar pyzbar/tests/code128.png
 ```
 
-### Testing python versions
+### Test matrix of supported Python versions
 
-Make a virtual env and install `tox`
-
-```
-mkvirtualenv tox
-pip install tox
-```
-
-If you use non-standard locations for your Python builds, make the interpreters available on the `PATH` before running `tox`.
+Run tox
 
 ```
-PATH=~/local/python-2.7.15/bin:~/local/python-3.4.9/bin:~/local/python-3.5.6/bin:~/local/python-3.6.8/bin:~/local/python-3.7.2/bin:$PATH
-tox
+rm -rf .tox && tox
 ```
 
 ### Windows
@@ -37,13 +30,7 @@ frozen binary.
 
 ## Releasing
 
-1. Install tools.
-
-```
-pip install wheel
-```
-
-2. Build
+1. Build
     Create source and wheel builds. The `win32` and `win_amd64` wheels will
     contain the appropriate `zbar.dll` and its dependencies.
 
@@ -63,7 +50,7 @@ pip install wheel
     rm -rf build MANIFEST.in pyzbar.egg-info
     ```
 
-3. Release to TestPyPI (see https://packaging.python.org/guides/using-testpypi/)
+2. Release to TestPyPI (see https://packaging.python.org/guides/using-testpypi/)
 
     ```
     mkvirtualenv pypi
@@ -71,15 +58,15 @@ pip install wheel
     twine upload -r testpypi dist/*
     ```
 
-4. Test the release to TestPyPI
+3. Test the release to TestPyPI
 
     * Check https://test.pypi.org/project/pyzbar/
 
     * If you are on Windows
 
     ```
-    set PATH=%PATH%;c:\python35\;c:\python35\scripts
-    \Python35\Scripts\mkvirtualenv.bat --python=c:\python27\python.exe test1
+    c:\python27\python.exe -m venv test1
+    test1\scripts\activate
     ```
 
     * Install dependencies that are not on testpypi.python.org.
@@ -110,7 +97,7 @@ pip install wheel
     read_zbar <path-to-image-with-barcode.png>
     ```
 
-5. If all is well, release to PyPI
+4. If all is well, release to PyPI
 
     ```
     twine upload dist/*
