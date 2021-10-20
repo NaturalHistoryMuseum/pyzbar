@@ -18,8 +18,14 @@ try:
 except ImportError:
     cv2 = None
 
+try:
+    import imageio
+except ImportError:
+    imageio = None
+
+from pyzbar import wrapper
 from pyzbar.pyzbar import (
-    decode, Decoded, Rect, ZBarSymbol, ZBarOrientation, EXTERNAL_DEPENDENCIES
+    decode, Decoded, Rect, ZBarSymbol, EXTERNAL_DEPENDENCIES
 )
 from pyzbar.pyzbar_error import PyZbarError
 
@@ -34,15 +40,17 @@ class TestDecode(unittest.TestCase):
             type='CODE128',
             rect=Rect(left=37, top=550, width=324, height=76),
             polygon=[(37, 551), (37, 625), (361, 626), (361, 550)],
-            orientation=ZBarOrientation.UP
+            orientation='UP',
+            quality=77,
         ),
         Decoded(
             data=b'Rana temporaria',
             type='CODE128',
             rect=Rect(left=4, top=0, width=390, height=76),
             polygon=[(4, 1), (4, 75), (394, 76), (394, 0)],
-            orientation=ZBarOrientation.UP
-        )
+            orientation='UP',
+            quality=77,
+        ),
     ]
 
     EXPECTED_QRCODE = [
@@ -51,8 +59,9 @@ class TestDecode(unittest.TestCase):
             type='QRCODE',
             rect=Rect(left=27, top=27, width=145, height=145),
             polygon=[(27, 27), (27, 172), (172, 172), (172, 27)],
-            orientation=ZBarOrientation.UP
-        )
+            orientation='UP',
+            quality=1,
+        ),
     ]
 
     # Two barcodes, both with same content
@@ -62,15 +71,17 @@ class TestDecode(unittest.TestCase):
             type='QRCODE',
             rect=Rect(left=173, top=10, width=205, height=205),
             polygon=[(173, 113), (276, 215), (378, 113), (276, 10)],
-            orientation=ZBarOrientation.UP
+            orientation='UP',
+            quality=1,
         ),
         Decoded(
             data=b'Thalassiodracon',
             type='QRCODE',
             rect=Rect(left=32, top=208, width=158, height=158),
             polygon=[(32, 352), (177, 366), (190, 222), (46, 208)],
-            orientation=ZBarOrientation.RIGHT
-        )
+            orientation='RIGHT',
+            quality=1,
+        ),
     ]
 
     def setUp(self):
@@ -136,11 +147,35 @@ class TestDecode(unittest.TestCase):
         res = decode(np.asarray(self.code128))
         self.assertEqual(self.EXPECTED_CODE128, res)
 
+    @unittest.skipIf(imageio is None, 'imageio not installed')
+    def test_decode_imageio(self):
+        "Read image using imageio"
+        res = decode(imageio.imread(TESTDATA.joinpath('code128.png')))
+        self.assertEqual(self.EXPECTED_CODE128, res)
+
     @unittest.skipIf(cv2 is None, 'OpenCV not installed')
     def test_decode_opencv(self):
         "Read image using OpenCV"
         res = decode(cv2.imread(str(TESTDATA.joinpath('code128.png'))))
         self.assertEqual(self.EXPECTED_CODE128, res)
+
+    @patch('pyzbar.pyzbar.zbar_image_first_symbol', autospec=True)
+    def test_unrecognised_symbol_type(self, zbar_image_first_symbol):
+        "The type of the first symbol is not recognised"
+        def zbar_image_first_symbol_set_symbol_type(image):
+            symbol = wrapper.zbar_image_first_symbol(image)
+            if symbol:
+                symbol.contents.type = -1
+            return symbol
+
+        zbar_image_first_symbol.side_effect = zbar_image_first_symbol_set_symbol_type
+
+        res = decode(np.asarray(self.code128))
+
+        expected = [
+            self.EXPECTED_CODE128[0]._replace(type='Unrecognised type [-1]')
+        ] + self.EXPECTED_CODE128[1:]
+        self.assertEqual(expected, res)
 
     def test_external_dependencies(self):
         "External dependencies"
@@ -153,7 +188,7 @@ class TestDecode(unittest.TestCase):
             any('libzbar' in d._name for d in EXTERNAL_DEPENDENCIES)
         )
 
-    @patch('pyzbar.pyzbar.zbar_image_create')
+    @patch('pyzbar.pyzbar.zbar_image_create', autospec=True)
     def test_zbar_image_create_fail(self, zbar_image_create):
         zbar_image_create.return_value = None
         self.assertRaisesRegex(
@@ -161,7 +196,7 @@ class TestDecode(unittest.TestCase):
         )
         zbar_image_create.assert_called_once_with()
 
-    @patch('pyzbar.pyzbar.zbar_image_scanner_create')
+    @patch('pyzbar.pyzbar.zbar_image_scanner_create', autospec=True)
     def test_zbar_image_scanner_create_fail(self, zbar_image_scanner_create):
         zbar_image_scanner_create.return_value = None
         self.assertRaisesRegex(
@@ -169,7 +204,7 @@ class TestDecode(unittest.TestCase):
         )
         zbar_image_scanner_create.assert_called_once_with()
 
-    @patch('pyzbar.pyzbar.zbar_scan_image')
+    @patch('pyzbar.pyzbar.zbar_scan_image', autospec=True)
     def test_zbar_scan_image_fail(self, zbar_scan_image):
         zbar_scan_image.return_value = -1
         self.assertRaisesRegex(

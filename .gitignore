@@ -1,10 +1,12 @@
-*.py[co]
+*.dll
 *.egg-info/
+*.py[co]
 .DS_Store
+.coverage
+.idea
+.tox
+MANIFEST.in
 build
 dist
-.tox
-.coverage
 htmlcov
-*dll
-MANIFEST.in
+venv

@@ -11,16 +11,16 @@ from .wrapper import (
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
     zbar_image_first_symbol, zbar_symbol_get_data, zbar_symbol_get_orientation,
     zbar_symbol_get_loc_size, zbar_symbol_get_loc_x, zbar_symbol_get_loc_y,
-    zbar_symbol_next, ZBarConfig, ZBarSymbol, ZBarOrientation, EXTERNAL_DEPENDENCIES
+    zbar_symbol_get_quality, zbar_symbol_next, ZBarConfig, ZBarOrientation,
+    ZBarSymbol, EXTERNAL_DEPENDENCIES,
 )
 
 __all__ = [
-    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'ZBarOrientation',
-    'EXTERNAL_DEPENDENCIES'
+    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'EXTERNAL_DEPENDENCIES'
 ]
 
 
-Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon', 'orientation'])
+Decoded = namedtuple('Decoded', 'data type rect polygon quality orientation')
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 _FOURCC = {
@@ -99,8 +99,17 @@ def _decode_symbols(symbols):
     """
     for symbol in symbols:
         data = string_at(zbar_symbol_get_data(symbol))
-        # The 'type' int in a value in the ZBarSymbol enumeration
-        symbol_type = ZBarSymbol(symbol.contents.type).name
+
+        # The 'type' int should be a value in the ZBarSymbol enumeration
+        try:
+            symbol_type = ZBarSymbol(symbol.contents.type)
+        except ValueError:
+            # This release of zbar supports a type that pyzbar does not know about
+            symbol_type = "Unrecognised type [{0}]".format(symbol.contents.type)
+        else:
+            symbol_type = symbol_type.name
+
+        quality = zbar_symbol_get_quality(symbol)
         polygon = convex_hull(
             (
                 zbar_symbol_get_loc_x(symbol, index),
@@ -108,13 +117,14 @@ def _decode_symbols(symbols):
             )
             for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
         )
-        orientation = ZBarOrientation(zbar_symbol_get_orientation(symbol))
+        orientation = ZBarOrientation(zbar_symbol_get_orientation(symbol)).name
         yield Decoded(
             data=data,
             type=symbol_type,
             rect=bounding_box(polygon),
             polygon=polygon,
             orientation=orientation,
+            quality=quality,
         )
 
 
@@ -124,14 +134,18 @@ def _pixel_data(image):
     Returns:
         :obj: `tuple` (pixels, width, height)
     """
-    # Test for PIL.Image and numpy.ndarray without requiring that cv2 or PIL
-    # are installed.
-    if 'PIL.' in str(type(image)):
+    # Test for PIL.Image, numpy.ndarray, and imageio.core.util without
+    # requiring that cv2, PIL, or imageio are installed.
+
+    image_type = str(type(image))
+    if 'PIL.' in image_type:
         if 'L' != image.mode:
             image = image.convert('L')
         pixels = image.tobytes()
         width, height = image.size
-    elif 'numpy.ndarray' in str(type(image)):
+    elif 'numpy.ndarray' in image_type or 'imageio.core.util' in image_type:
+        # Different versions of imageio use a subclass of numpy.ndarray
+        # called either imageio.core.util.Image or imageio.core.util.Array.
         if 3 == len(image.shape):
             # Take just the first channel
             image = image[:, :, 0]

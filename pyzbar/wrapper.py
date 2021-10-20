@@ -17,7 +17,8 @@ __all__ = [
     'zbar_image_set_format', 'zbar_image_set_size', 'zbar_scan_image',
     'zbar_symbol_get_data', 'zbar_symbol_get_loc_size',
     'zbar_symbol_get_loc_x', 'zbar_symbol_get_loc_y',
-    'zbar_symbol_get_orientation', 'zbar_symbol_next'
+    'zbar_symbol_get_orientation', 'zbar_symbol_next',
+    'zbar_symbol_get_quality',
 ]
 
 # Globals populated in load_libzbar
@@ -58,6 +59,7 @@ class ZBarSymbol(IntEnum):
     CODE39 = 39       # /**< Code 39. @since 0.4 */
     PDF417 = 57       # /**< PDF417. @since 0.6 */
     QRCODE = 64       # /**< QR Code. @since 0.10 */
+    SQCODE = 80       # /**< SQ Code. @since 0.20.1 */
     CODE93 = 93       # /**< Code 93. @since 0.11 */
     CODE128 = 128     # /**< Code 128 */
 
@@ -277,5 +279,11 @@ zbar_symbol_get_orientation = zbar_function(
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',
     POINTER(zbar_symbol),
+    POINTER(zbar_symbol)
+)
+
+zbar_symbol_get_quality = zbar_function(
+    'zbar_symbol_get_quality',
+    c_int,
     POINTER(zbar_symbol)
 )
