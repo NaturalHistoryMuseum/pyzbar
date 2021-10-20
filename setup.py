@@ -59,10 +59,12 @@ setup_data = {
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 }
 
@@ -72,7 +74,7 @@ def setuptools_setup():
     setup(**setup_data)
 
 
-if (2, 7) == sys.version_info[:2] or (3, 4) <= sys.version_info:
+if (2, 7) == sys.version_info[:2] or (3, 5) <= sys.version_info:
     setuptools_setup()
 else:
-    sys.exit('Python versions 2.7 and >= 3.4 are supported')
+    sys.exit('Python versions 2.7 and >= 3.5 are supported')

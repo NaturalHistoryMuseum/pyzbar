@@ -1,7 +1,7 @@
 pyzbar
 ======
 
-.. image:: https://img.shields.io/badge/python-2.7%2C%203.4%2C%203.5%2C%203.6%2C%203.7-blue.svg
+.. image:: https://img.shields.io/badge/python-2.7%2C%203.5%2C%203.6%2C%203.7%2C%203.8%2C%203.9%2C%203.10-blue.svg
     :target: https://github.com/NaturalHistoryMuseum/pyzbar
 
 .. image:: https://badge.fury.io/py/pyzbar.svg
@@ -17,10 +17,10 @@ Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
 `zbar <http://zbar.sourceforge.net/>`__ library.
 
 -  Pure python
--  Works with PIL / Pillow images, OpenCV / numpy ``ndarray``\ s, and raw bytes
+-  Works with PIL / Pillow images, OpenCV / imageio / numpy ``ndarray``\ s, and raw bytes
 -  Decodes locations of barcodes
 -  No dependencies, other than the zbar library itself
--  Tested on Python 2.7, and Python 3.4 to 3.7
+-  Tested on Python 2.7, and Python 3.5 to 3.10
 
 The older `zbar <https://sourceforge.net/p/zbar/code/ci/default/tree/python/>`__
 package is stuck in Python 2.x-land.
@@ -71,7 +71,8 @@ The ``decode`` function accepts instances of ``PIL.Image``.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           quality=77
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -79,7 +80,8 @@ The ``decode`` function accepts instances of ``PIL.Image``.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           quality=77
        )
    ]
 
@@ -97,7 +99,8 @@ images using `OpenCV <http://opencv.org/>`__.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           quality=77
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -105,7 +108,8 @@ images using `OpenCV <http://opencv.org/>`__.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           quality=77
        )
    ]
 
@@ -126,7 +130,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           quality=77
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -134,7 +139,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           quality=77
        )
    ]
 
@@ -148,7 +154,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=37, y=551), Point(x=37, y=625), Point(x=361, y=626),
                Point(x=361, y=550)
-           ]
+           ],
+           quality=77
        )
        Decoded(
            data=b'Rana temporaria', type='CODE128',
@@ -156,7 +163,8 @@ is eight bits-per-pixel.
            polygon=[
                Point(x=4, y=1), Point(x=4, y=75), Point(x=394, y=76),
                Point(x=394, y=0)
-           ]
+           ],
+           quality=77
        )
    ]
 
@@ -183,7 +191,8 @@ symbol types
            polygon=[
                Point(x=27, y=27), Point(x=27, y=172), Point(x=172, y=172),
                Point(x=172, y=27)
-           ]
+           ],
+           quality=1
        )
    ]
 
@@ -191,6 +200,17 @@ symbol types
    >>> # If we look for just code128, the qrcodes in the image will not be detected
    >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
    []
+
+Quality field
+-------------
+From
+`zbar.h <https://sourceforge.net/p/zbar/code/ci/default/tree/include/zbar.h#l359>`__, the quality field is
+
+  ...an unscaled, relative quantity: larger values are better than smaller
+  values, where "large" and "small" are application dependent. Expect the exact
+  definition of this quantity to change as the metric is refined. currently,
+  only the ordered relationship between two values is defined and will remain
+  stable in the future
 
 Bounding boxes and polygons
 ---------------------------
@@ -216,6 +236,7 @@ Contributors
 ------------
 
 -  Alex (@globophobe) - first implementation of barcode locations
+-  Ismail Bento (@isman7) - support for images loaded using imageio
 -  @jaant - read barcodes containing null characters
 
 License
