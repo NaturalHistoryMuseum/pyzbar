@@ -1,3 +1,0 @@
-# Dependencies required to run continuous integration
--r requirements-text.txt
-coveralls==3.2.0
