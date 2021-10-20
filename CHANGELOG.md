@@ -2,6 +2,7 @@
 
 * #108 Python 3.8., 3.9 and 3.10; drop support for Python 3.4
 * #107 Support SQ Codes; tolerate unrecognised codes
+* #46 Include quality
 
 ### v0.1.8
 

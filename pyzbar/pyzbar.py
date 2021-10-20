@@ -11,7 +11,8 @@ from .wrapper import (
     zbar_image_set_size, zbar_image_set_data, zbar_scan_image,
     zbar_image_first_symbol, zbar_symbol_get_data,
     zbar_symbol_get_loc_size, zbar_symbol_get_loc_x, zbar_symbol_get_loc_y,
-    zbar_symbol_next, ZBarConfig, ZBarSymbol, EXTERNAL_DEPENDENCIES
+    zbar_symbol_get_quality, zbar_symbol_next, ZBarConfig, ZBarSymbol,
+    EXTERNAL_DEPENDENCIES
 )
 
 __all__ = [
@@ -19,7 +20,7 @@ __all__ = [
 ]
 
 
-Decoded = namedtuple('Decoded', ['data', 'type', 'rect', 'polygon'])
+Decoded = namedtuple('Decoded', 'data type rect polygon quality')
 
 # ZBar's magic 'fourcc' numbers that represent image formats
 _FOURCC = {
@@ -108,6 +109,7 @@ def _decode_symbols(symbols):
         else:
             symbol_type = symbol_type.name
 
+        quality = zbar_symbol_get_quality(symbol)
         polygon = convex_hull(
             (
                 zbar_symbol_get_loc_x(symbol, index),
@@ -120,7 +122,8 @@ def _decode_symbols(symbols):
             data=data,
             type=symbol_type,
             rect=bounding_box(polygon),
-            polygon=polygon
+            polygon=polygon,
+            quality=quality
         )
 
 
