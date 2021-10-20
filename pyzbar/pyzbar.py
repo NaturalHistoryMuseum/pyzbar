@@ -144,7 +144,7 @@ def _pixel_data(image):
         width, height = image.size
     elif 'numpy.ndarray' in image_type or 'imageio.core.util' in image_type:
         # Different versions of imageio use a subclass of numpy.ndarray
-        # called wither imageio.core.util.Image or imageio.core.util.Array.
+        # called either imageio.core.util.Image or imageio.core.util.Array.
         if 3 == len(image.shape):
             # Take just the first channel
             image = image[:, :, 0]
