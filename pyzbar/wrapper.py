@@ -10,7 +10,7 @@ from . import zbar_library
 
 
 __all__ = [
-    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol',
+    'EXTERNAL_DEPENDENCIES', 'LIBZBAR', 'ZBarConfig', 'ZBarSymbol', 'ZBarOrientation',
     'zbar_image_create', 'zbar_image_destroy', 'zbar_image_first_symbol',
     'zbar_image_scanner_create', 'zbar_image_scanner_destroy',
     'zbar_image_scanner_set_config', 'zbar_image_set_data',
@@ -18,7 +18,7 @@ __all__ = [
     'zbar_symbol_get_data_length', 'zbar_symbol_get_data',
     'zbar_symbol_get_loc_size', 'zbar_symbol_get_loc_x',
     'zbar_symbol_get_loc_y', 'zbar_symbol_next',
-    'zbar_symbol_get_quality',
+    'zbar_symbol_get_orientation', 'zbar_symbol_get_quality',
 ]
 
 # Globals populated in load_libzbar
@@ -81,6 +81,15 @@ class ZBarConfig(IntEnum):
 
     CFG_X_DENSITY = 0x100   # /**< image scanner vertical scan density */
     CFG_Y_DENSITY = 0x101   # /**< image scanner horizontal scan density */
+
+
+@unique
+class ZBarOrientation(IntEnum):
+    UNKNOWN = -1   # /**< unable to determine orientation */
+    UP = 0         # /**< upright, read left to right */
+    RIGHT = 1      # /**< sideways, read top to bottom */
+    DOWN = 2       # /**< upside-down, read right to left */
+    LEFT = 3       # /**< sideways, read bottom to top */
 
 
 # Structs
@@ -259,6 +268,12 @@ zbar_symbol_get_loc_y = zbar_function(
     c_int,
     POINTER(zbar_symbol),
     c_uint
+)
+
+zbar_symbol_get_orientation = zbar_function(
+    'zbar_symbol_get_orientation',
+    c_uint,
+    POINTER(zbar_symbol)
 )
 
 zbar_symbol_next = zbar_function(
