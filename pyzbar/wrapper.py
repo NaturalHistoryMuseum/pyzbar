@@ -270,11 +270,17 @@ zbar_symbol_get_loc_y = zbar_function(
     c_uint
 )
 
-zbar_symbol_get_orientation = zbar_function(
-    'zbar_symbol_get_orientation',
-    c_uint,
-    POINTER(zbar_symbol)
-)
+
+try:
+    zbar_symbol_get_orientation = zbar_function(
+        'zbar_symbol_get_orientation',
+        c_uint,
+        POINTER(zbar_symbol)
+    )
+except AttributeError:
+    # This function not present in the original pre-20
+    zbar_symbol_get_orientation = None
+
 
 zbar_symbol_next = zbar_function(
     'zbar_symbol_next',

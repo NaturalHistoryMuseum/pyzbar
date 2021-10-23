@@ -3,7 +3,7 @@
 ```
 python -m venv venv
 source ./venv/bin/activate
-pip install -U pip==21.3
+pip install -U pip==20.3.4
 pip install -r requirements.txt
 
 python -m pytest --verbose --cov=pyzbar --cov-report=term-missing --cov-report=html pyzbar

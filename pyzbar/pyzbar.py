@@ -17,9 +17,11 @@ from .wrapper import (
 )
 
 __all__ = [
-    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'EXTERNAL_DEPENDENCIES'
+    'decode', 'Point', 'Rect', 'Decoded', 'ZBarSymbol', 'EXTERNAL_DEPENDENCIES', 'ORIENTATION_AVAILABLE'
 ]
 
+
+ORIENTATION_AVAILABLE = zbar_symbol_get_orientation is not None
 
 Decoded = namedtuple('Decoded', 'data type rect polygon quality orientation')
 
@@ -120,7 +122,12 @@ def _decode_symbols(symbols):
             )
             for index in _RANGEFN(zbar_symbol_get_loc_size(symbol))
         )
-        orientation = ZBarOrientation(zbar_symbol_get_orientation(symbol)).name
+
+        if zbar_symbol_get_orientation:
+            orientation = ZBarOrientation(zbar_symbol_get_orientation(symbol)).name
+        else:
+            orientation = None
+
         yield Decoded(
             data=data,
             type=symbol_type,

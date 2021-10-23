@@ -210,6 +210,17 @@ symbol types
    >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
    []
 
+ZBar versions
+-------------
+
+Development of the `original zbar <http://zbar.sourceforge.net/>`__ stopped in 2012.
+Development was started again in 2019 under a `new project <https://github.com/mchehab/zbar/>`__
+that has added some new features, including support for decoding
+barcode orientation. At the time of writing the project does not produce Windows DLLs.
+If you see `orientation=None` then your system has an older release of zbar.
+The ``zbar`` ``DLL``\ s that are included with the Windows Python wheels are
+an old build that does not support orientation.
+
 Quality field
 -------------
 From
