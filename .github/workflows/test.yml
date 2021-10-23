@@ -47,7 +47,7 @@ jobs:
           pip install coveralls>=3.2.0
 
       - name: Run tests
-        run: pytest --verbose --cov=pyzbar yzbar
+        run: pytest --verbose --cov=pyzbar pyzbar
 
       - name: Upload coverage
         run: coveralls
