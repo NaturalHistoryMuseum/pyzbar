@@ -8,7 +8,7 @@ pyzbar
     :target: https://pypi.python.org/pypi/pyzbar
 
 .. image:: https://img.shields.io/github/workflow/status/NaturalHistoryMuseum/pyzbar/Tests/master?label=tests
-    :target: https://github.com/NaturalHistoryMuseum/pyzbar/actions?query=workflow%3A%22Tests
+    :target: https://github.com/NaturalHistoryMuseum/pyzbar/actions?query=workflow%3A%22Tests%22
 
 .. image:: https://coveralls.io/repos/github/NaturalHistoryMuseum/pyzbar/badge.svg?branch=master
     :target: https://coveralls.io/github/NaturalHistoryMuseum/pyzbar?branch=master
