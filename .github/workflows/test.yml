@@ -49,6 +49,7 @@ jobs:
         run: pytest --verbose --cov=pyzbar --cov-report xml pyzbar
 
       - name: Upload coverage
+        if: runner.python-version != '2.7'
         run: |
           pip install coveralls>=3.2.0
           coveralls --service=github
