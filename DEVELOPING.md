@@ -3,7 +3,7 @@
 ```
 python -m venv venv
 source ./venv/bin/activate
-pip install -U pip
+pip install -U pip==21.3
 pip install -r requirements.txt
 
 python -m pytest --verbose --cov=pyzbar --cov-report=term-missing --cov-report=html pyzbar
@@ -53,8 +53,6 @@ frozen binary.
 2. Release to TestPyPI (see https://packaging.python.org/guides/using-testpypi/)
 
     ```
-    mkvirtualenv pypi
-    pip install twine
     twine upload -r testpypi dist/*
     ```
 
