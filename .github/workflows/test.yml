@@ -47,9 +47,10 @@ jobs:
           pip install coveralls>=3.2.0
 
       - name: Run tests
-        run: pytest --verbose --cov=pyzbar pyzbar
+        run: pytest --verbose --cov=pyzbar --cov-report xml pyzbar
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          path--to-lcov: coverage.xml
