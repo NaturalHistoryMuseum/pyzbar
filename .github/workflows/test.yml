@@ -46,10 +46,10 @@ jobs:
           pip install -r requirements-test.txt
 
       - name: Run tests
-        run: pytest --verbose --cov=pyzbar --cov-report xml pyzbar
+        run: pytest --verbose --cov=pyzbar pyzbar
 
       - name: Upload coverage
-        if: "runner.python-version != 2.7"
+        if: ${{ matrix.python-version == 3.10 && runner.os == 'Linux' }}
         run: |
           pip install coveralls>=3.2.0
           coveralls --service=github
