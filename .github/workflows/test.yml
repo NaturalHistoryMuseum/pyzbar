@@ -49,5 +49,7 @@ jobs:
       - name: Run tests
         run: pytest --verbose --cov=pyzbar pyzbar
 
-      - name: Upload coverage
-        run: coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
