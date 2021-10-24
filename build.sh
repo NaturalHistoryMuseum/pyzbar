@@ -3,10 +3,11 @@ rm -rf build dist MANIFEST.in pyzbar.egg-info
 cp MANIFEST.in.all MANIFEST.in
 ./setup.py bdist_wheel
 
-DLL_ROOT=https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1
 if [ ! -f pyzbar/libzbar-32.dll ]; then
   echo Fetch DLLs
-  wget $DLL_ROOT/libzbar-32.dll $DLL_ROOT/libiconv-2.dll $DLL_ROOT/libzbar-64.dll $DLL_ROOT/libiconv.dll --directory-prefix pyzbar/
+  cd pyzbar
+  curl --location --remote-name-all "https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/{libzbar-32.dll,libiconv-2.dll,libzbar-64.dll,libiconv.dll}"
+  cd ..
 fi
 
 echo Windows 32-bit wheel
