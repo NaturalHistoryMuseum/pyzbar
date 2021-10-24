@@ -20,8 +20,8 @@ rm -rf .tox && tox
 
 ### Windows
 
-The `pyzbar` directory contains both 32-bit (`libiconv-2.dll` and `libzbar-32.dll`)
-and 64-bit (`ibiconv.dll` and `libzbar-64.dll`) DLLs.
+The `build.sh` script downloads both the 32-bit (`libiconv-2.dll` and `libzbar-32.dll`)
+and 64-bit (`ibiconv.dll` and `libzbar-64.dll`) DLLs to the `pyzbar` directory.
 The `load_zbar` function in `wrapper.py` looks for the appropriate DLLs.
 The appropriate DLLs are packaged up into the wheel build and are installed
 alongside the package source. This strategy allows the same method to be used
