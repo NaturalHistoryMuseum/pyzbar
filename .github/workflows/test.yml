@@ -33,16 +33,6 @@ jobs:
           brew update
           brew install zbar
 
-      - name: Download 32-bit DLLs
-        if: {{ runner.os == 'Windows' && matrix.architecture == 'x86' }}
-        run: |
-          wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-32.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv-2.dll
-
-      - name: Download 64-bit DLLs
-        if: {{ runner.os == 'Windows' && matrix.architecture == 'x64' }}
-        run: |
-          wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-64.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv.dll
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -56,6 +46,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip==20.3.4
           pip install -r requirements-test.txt
+
+      - name: Download 32-bit DLLs
+        if: {{ runner.os == 'Windows' && matrix.architecture == 'x86' }}
+        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-32.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv-2.dll
+
+      - name: Download 64-bit DLLs
+        if: {{ runner.os == 'Windows' && matrix.architecture == 'x64' }}
+        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-64.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv.dll
 
       - name: Run tests
         run: pytest --verbose --cov=pyzbar pyzbar
