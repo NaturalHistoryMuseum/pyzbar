@@ -48,12 +48,12 @@ jobs:
           pip install -r requirements-test.txt
 
       - name: Download 32-bit DLLs
-        if: {{ runner.os == 'Windows' && matrix.architecture == 'x86' }}
-        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-32.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv-2.dll
+        if: ${{ runner.os == 'Windows' && matrix.architecture == 'x86' }}
+        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-32.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv-2.dll --directory-prefix pyzbar/
 
       - name: Download 64-bit DLLs
-        if: {{ runner.os == 'Windows' && matrix.architecture == 'x64' }}
-        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-64.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv.dll
+        if: ${{ runner.os == 'Windows' && matrix.architecture == 'x64' }}
+        run: wget https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libzbar-64.dll https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/libiconv.dll --directory-prefix pyzbar/
 
       - name: Run tests
         run: pytest --verbose --cov=pyzbar pyzbar
