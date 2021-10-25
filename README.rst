@@ -266,4 +266,4 @@ License
 
 ``pyzbar`` is distributed under the MIT license (see ``LICENCE.txt``).
 The ``zbar`` shared library is distributed under the
-[GNU Lesser General Public License, version 2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
+`GNU Lesser General Public License, version 2.1 <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>`__
