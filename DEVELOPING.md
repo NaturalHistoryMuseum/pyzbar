@@ -20,10 +20,10 @@ rm -rf .tox && tox
 
 ### Windows
 
-Save the 32-bit and 64-bit `zbar.dll` files, and their dependencies,
-to `libzbar-32.dll` and `libzbar-64.dll` respectively, in the `pyzbar` directory.
-The `load_zbar` function in `wrapper.py` looks for the appropriate `DLL`s.
-The appropriate `DLL`s are packaged up into the wheel build and is installed
+The `build.sh` script downloads both the 32-bit (`libiconv-2.dll` and `libzbar-32.dll`)
+and 64-bit (`ibiconv.dll` and `libzbar-64.dll`) DLLs to the `pyzbar` directory.
+The `load_zbar` function in `wrapper.py` looks for the appropriate DLLs.
+The appropriate DLLs are packaged up into the wheel build and are installed
 alongside the package source. This strategy allows the same method to be used
 when `pyzbar` is run from source, as an installed package and when included in a
 frozen binary.
@@ -31,23 +31,12 @@ frozen binary.
 ## Releasing
 
 1. Build
-    Create source and wheel builds. The `win32` and `win_amd64` wheels will
-    contain the appropriate `zbar.dll` and its dependencies.
+
+    Create wheel builds in the `dist` directory. The `win32` and `win_amd64`
+    wheels will contain the appropriate `zbar.dll` and its dependencies.
 
     ```
-    rm -rf build dist MANIFEST.in pyzbar.egg-info
-    cp MANIFEST.in.all MANIFEST.in
-    ./setup.py bdist_wheel
-
-    cat MANIFEST.in.all MANIFEST.in.win32 > MANIFEST.in
-    ./setup.py bdist_wheel --plat-name=win32
-
-    # Remove these dirs to prevent win32 DLLs from being included in win64 build
-    rm -rf build pyzbar.egg-info
-    cat MANIFEST.in.all MANIFEST.in.win64 > MANIFEST.in
-    ./setup.py bdist_wheel --plat-name=win_amd64
-
-    rm -rf build MANIFEST.in pyzbar.egg-info
+   ./build.sh
     ```
 
 2. Release to TestPyPI (see https://packaging.python.org/guides/using-testpypi/)

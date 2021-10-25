@@ -11,9 +11,12 @@ jobs:
         include:
           - os: macos-10.15
             python-version: 3.10.0
-          # TODO Include DLLs in source code?
-          # - os: windows-2019
-          #   python-version: 3.10
+          - os: windows-2019
+            python-version: 3.10.0
+            architecture: 'x86'
+          - os: windows-2019
+            python-version: 3.10.0
+            architecture: 'x64'
 
     runs-on: ${{ matrix.os }}
 
@@ -37,13 +40,26 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-          # TODO Both x64 and x86 on Windows
-          architecture: 'x64'
+          architecture: ${{ matrix.architecture }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip==20.3.4
           pip install -r requirements-test.txt
+
+      - name: Download 32-bit DLLs
+        if: ${{ runner.os == 'Windows' && matrix.architecture == 'x86' }}
+        run: |
+          cd pyzbar
+          curl --location --remote-name-all "https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/{libzbar-32.dll,libiconv-2.dll}"
+          cd ..
+
+      - name: Download 64-bit DLLs
+        if: ${{ runner.os == 'Windows' && matrix.architecture == 'x64' }}
+        run: |
+          cd pyzbar
+          curl --location --remote-name-all "https://github.com/NaturalHistoryMuseum/barcode-reader-dlls/releases/download/0.1/{libzbar-64.dll,libiconv.dll}"
+          cd ..
 
       - name: Run tests
         run: pytest --verbose --cov=pyzbar pyzbar

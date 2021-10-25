@@ -30,7 +30,7 @@ provide support for Windows and depends upon Pillow.
 Installation
 ------------
 
-The ``zbar`` ``DLL``\ s are included with the Windows Python wheels.
+The ``zbar`` DLLs are included with the Windows Python wheels.
 On other operating systems, you will need to install the ``zbar`` shared
 library.
 
@@ -216,10 +216,11 @@ ZBar versions
 Development of the `original zbar <http://zbar.sourceforge.net/>`__ stopped in 2012.
 Development was started again in 2019 under a `new project <https://github.com/mchehab/zbar/>`__
 that has added some new features, including support for decoding
-barcode orientation. At the time of writing the project does not produce Windows DLLs.
-If you see `orientation=None` then your system has an older release of zbar.
-The ``zbar`` ``DLL``\ s that are included with the Windows Python wheels are
-an old build that does not support orientation.
+barcode orientation. At the time of writing this new project does not produce Windows DLLs.
+The ``zbar`` DLLs that are included with the Windows Python wheels are built from the original
+project and so do not include support for decoding barcode orientation.
+If you see ``orientation=None`` then your system has an older release of zbar that does
+not support orientation.
 
 Quality field
 -------------
@@ -264,5 +265,5 @@ License
 -------
 
 ``pyzbar`` is distributed under the MIT license (see ``LICENCE.txt``).
-The ``zbar`` shared library is distributed under the GNU Lesser General
-Public License, version 2.1 (see ``zbar-LICENCE.txt``).
+The ``zbar`` shared library is distributed under the
+[GNU Lesser General Public License, version 2.1](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
