@@ -193,13 +193,21 @@ def _pixel_data(image):
     return pixels, width, height
 
 
-def decode(image, symbols=None):
+def decode(image, symbols=None, x_density=None, y_density=None):
     """Decodes datamatrix barcodes in `image`.
 
     Args:
         image: `numpy.ndarray`, `PIL.Image` or tuple (pixels, width, height)
         symbols: iter(ZBarSymbol) the symbol types to decode; if `None`, uses
             `zbar`'s default behaviour, which is to decode all symbol types.
+       
+        x_density: int, controls the number of pixel rows (columns) that are 
+            skipped between successive horizontal (vertical) scan passes.
+            A value of 0 completely disables scanning in this direction.
+        
+        y_density: int, controls the number of pixel rows (columns) that are 
+            skipped between successive horizontal (vertical) scan passes.
+            A value of 0 completely disables scanning in this direction.
 
     Returns:
         :obj:`list` of :obj:`Decoded`: The values decoded from barcodes.
@@ -221,7 +229,21 @@ def decode(image, symbols=None):
             # them.
             for symbol in symbols:
                 zbar_image_scanner_set_config(
-                    scanner, symbol, ZBarConfig.CFG_ENABLE, 1
+                    scanner, symbol, ZBarConfig.CFG_ENABLE, 0
+                )
+        # attempt to disable scan density for x axis
+        # http://zbar.sourceforge.net/iphone/sdkdoc/optimizing.html#limit-the-scan-density
+        # note, the 2nd param seems specific to symbology. Just setting it to 0
+        if x_density is not None:
+            zbar_image_scanner_set_config(
+                    scanner, 0, ZBarConfig.CFG_X_DENSITY, x_density
+                )
+        # attempt to disable scan density for y axis
+        # http://zbar.sourceforge.net/iphone/sdkdoc/optimizing.html#limit-the-scan-density
+        # note, the 2nd param seems specific to symbology. Just setting it to 0
+        if y_density is not None:
+            zbar_image_scanner_set_config(
+                    scanner, 0, ZBarConfig.CFG_Y_DENSITY, y_density
                 )
         with _image() as img:
             zbar_image_set_format(img, _FOURCC['L800'])
