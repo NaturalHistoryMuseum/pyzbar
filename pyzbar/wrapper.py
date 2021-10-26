@@ -66,21 +66,23 @@ class ZBarSymbol(IntEnum):
 
 @unique
 class ZBarConfig(IntEnum):
-    CFG_ENABLE = 0          # /**< enable symbology/feature */
-    CFG_ADD_CHECK = 1       # /**< enable check digit when optional */
-    CFG_EMIT_CHECK = 2      # /**< return check digit when present */
-    CFG_ASCII = 3           # /**< enable full ASCII character set */
-    CFG_NUM = 4             # /**< number of boolean decoder configs */
+    CFG_ENABLE = 0            # /**< enable symbology/feature */
+    CFG_ADD_CHECK = 1         # /**< enable check digit when optional */
+    CFG_EMIT_CHECK = 2        # /**< return check digit when present */
+    CFG_ASCII = 3             # /**< enable full ASCII character set */
+    CFG_BINARY = 4,           # /**< don't convert binary data to text */
+    CFG_NUM = 5               # /**< number of boolean decoder configs */
 
-    CFG_MIN_LEN = 0x20      # /**< minimum data length for valid decode */
-    CFG_MAX_LEN = 0x21      # /**< maximum data length for valid decode */
+    CFG_MIN_LEN = 0x20        # /**< minimum data length for valid decode */
+    CFG_MAX_LEN = 0x21        # /**< maximum data length for valid decode */
 
-    CFG_UNCERTAINTY = 0x40  # /**< required video consistency frames */
+    CFG_UNCERTAINTY = 0x40    # /**< required video consistency frames */
 
-    CFG_POSITION = 0x80     # /**< enable scanner to collect position data */
+    CFG_POSITION = 0x80       # /**< enable scanner to collect position data */
+    CFG_TEST_INVERTED = 0x81  # /**< if fails to decode, test inverted * /
 
-    CFG_X_DENSITY = 0x100   # /**< image scanner vertical scan density */
-    CFG_Y_DENSITY = 0x101   # /**< image scanner horizontal scan density */
+    CFG_X_DENSITY = 0x100     # /**< image scanner vertical scan density */
+    CFG_Y_DENSITY = 0x101     # /**< image scanner horizontal scan density */
 
 
 @unique
