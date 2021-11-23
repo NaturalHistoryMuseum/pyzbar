@@ -55,7 +55,7 @@ def load():
             return deps, libzbar
 
         try:
-            dependencies, libzbar = load_objects(Path(''))
+            dependencies, libzbar = load_objects(Path('').absolute())
         except OSError:
             dependencies, libzbar = load_objects(Path(__file__).parent)
     else:
