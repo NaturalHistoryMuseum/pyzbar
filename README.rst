@@ -39,6 +39,13 @@ Mac OS X:
 ::
 
    brew install zbar
+   
+or
+
+::
+
+   conda install -c conda-forge zbar
+
 
 Linux:
 
