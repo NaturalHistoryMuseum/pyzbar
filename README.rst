@@ -16,7 +16,6 @@ pyzbar
 Read one-dimensional barcodes and QR codes from Python 2 and 3 using the
 `zbar <http://zbar.sourceforge.net/>`__ library.
 
--  Pure python
 -  Works with PIL / Pillow images, OpenCV / imageio / numpy ``ndarray``\ s, and raw bytes
 -  Decodes locations of barcodes
 -  No dependencies, other than the zbar library itself
