@@ -274,7 +274,7 @@ zbar_symbol_get_loc_y = zbar_function(
 try:
     zbar_symbol_get_orientation = zbar_function(
         'zbar_symbol_get_orientation',
-        c_uint,
+        c_int,
         POINTER(zbar_symbol)
     )
 except AttributeError:
