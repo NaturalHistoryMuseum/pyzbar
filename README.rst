@@ -59,7 +59,7 @@ Example usage
 
 The ``decode`` function accepts instances of ``PIL.Image``.
 
-::
+.. code-block:: python
 
    >>> from pyzbar.pyzbar import decode
    >>> from PIL import Image
@@ -90,7 +90,7 @@ The ``decode`` function accepts instances of ``PIL.Image``.
 It also accepts instances of ``numpy.ndarray``, which might come from loading
 images using `OpenCV <http://opencv.org/>`__.
 
-::
+.. code-block:: python
 
    >>> import cv2
    >>> decode(cv2.imread('pyzbar/tests/code128.png'))
@@ -120,7 +120,7 @@ images using `OpenCV <http://opencv.org/>`__.
 You can also provide a tuple ``(pixels, width, height)``, where the image data
 is eight bits-per-pixel.
 
-::
+.. code-block:: python
 
    >>> image = cv2.imread('pyzbar/tests/code128.png')
    >>> height, width = image.shape[:2]
@@ -187,7 +187,7 @@ is eight bits-per-pixel.
 The default behaviour is to decode all symbol types. You can look for just your
 symbol types
 
-::
+.. code-block:: python
 
    >>> from pyzbar.pyzbar import ZBarSymbol
    >>> # Look for just qrcode
