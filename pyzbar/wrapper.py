@@ -108,7 +108,7 @@ class zbar_image(Structure):
 class zbar_symbol(Structure):
     """Opaque C++ class with private implementation
 
-    The first item in the structure is an integeger value in the ZBarSymbol
+    The first item in the structure is an integer value in the ZBarSymbol
     enumeration.
     """
     _fields_ = [
