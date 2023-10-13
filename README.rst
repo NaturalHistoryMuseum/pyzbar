@@ -210,6 +210,13 @@ symbol types
    >>> decode(Image.open('pyzbar/tests/qrcode.png'), symbols=[ZBarSymbol.CODE128])
    []
 
+How to Guides
+-------------
+
+Below are guides that show how to use pyzbar to solve problems written by the community.
+
+- `Barcode Detection API tutorial <https://blog.roboflow.com/read-barcodes-computer-vision/>`__: Use computer vision to identify barcodes in an image then use pyzbar to read the values associated with the tool.
+
 ZBar versions
 -------------
 
